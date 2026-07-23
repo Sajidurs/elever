@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Elever Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#0B0B0C;color:#F5F5F3;font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;}
+  a{color:#C1A078;}
+  input,textarea,select,button{font-family:inherit;font-size:14px;}
+  input,textarea,select{background:#1A1A1C;border:1px solid rgba(255,255,255,.12);color:#F5F5F3;border-radius:8px;padding:9px 11px;width:100%;}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:#C1A078;}
+  button{cursor:pointer;border:none;border-radius:8px;padding:9px 16px;font-weight:500;background:#C1A078;color:#0B0B0C;}
+  button.secondary{background:transparent;color:#F5F5F3;border:1px solid rgba(255,255,255,.18);}
+  button.danger{background:#3a1c1c;color:#f5b7b7;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top;}
+  th{color:#9a9a9e;font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.04em;}
+  .card{background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  .row > *{flex:1;min-width:160px;}
+  .muted{color:#9a9a9e;font-size:13px;}
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;background:rgba(193,160,120,.16);color:#C1A078;}
+  #login-view{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  #login-view .card{width:100%;max-width:360px;}
+  #dashboard-view{display:flex;min-height:100vh;}
+  nav.sidebar{width:200px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.08);padding:20px 12px;}
+  nav.sidebar .logo{font-size:15px;font-weight:600;letter-spacing:.08em;padding:8px 10px 20px;}
+  nav.sidebar button.tab{display:block;width:100%;text-align:left;background:none;color:#c9c9cc;padding:9px 10px;border-radius:8px;margin-bottom:2px;font-weight:400;}
+  nav.sidebar button.tab.active{background:rgba(193,160,120,.14);color:#C1A078;}
+  main.content{flex:1;padding:28px 32px;max-width:920px;}
+  main.content h1{font-size:20px;font-weight:600;margin:0 0 18px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12.5px;color:#9a9a9e;margin-bottom:5px;}
+  .toast{position:fixed;bottom:24px;right:24px;background:#1A1A1C;border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:12px 16px;font-size:13.5px;max-width:320px;}
+  .toast.error{border-color:#f5b7b7;color:#f5b7b7;}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
+  .modal{background:#141416;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:26px;width:100%;max-width:460px;max-height:88vh;overflow:auto;}
+  .modal h2{margin:0 0 16px;font-size:17px;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+  .thumb{width:44px;height:44px;object-fit:cover;border-radius:6px;background:#1A1A1C;}
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+
+<div id="login-view">
+  <div class="card">
+    <div style="font-size:15px;font-weight:600;letter-spacing:.08em;margin-bottom:18px;">ELEVER ADMIN</div>
+    <form id="login-form">
+      <div class="field"><label>Email</label><input type="email" id="login-email" required autocomplete="username"></div>
+      <div class="field"><label>Password</label><input type="password" id="login-password" required autocomplete="current-password"></div>
+      <div id="login-error" class="muted" style="color:#f5b7b7;margin-bottom:10px;"></div>
+      <button type="submit" id="login-submit" style="width:100%;">Sign in</button>
+    </form>
+  </div>
+</div>
+
+<div id="dashboard-view" hidden>
+  <nav class="sidebar">
+    <div class="logo">ELEVER ADMIN</div>
+    <button class="tab" data-tab="products">Products</button>
+    <button class="tab" data-tab="orders">Orders</button>
+    <button class="tab" data-tab="activations">Activations</button>
+    <button class="tab" data-tab="messages">Messages</button>
+    <button class="tab" data-tab="settings">Settings</button>
+    <button class="secondary" id="logout-btn" style="margin-top:24px;width:100%;">Log out</button>
+  </nav>
+  <main class="content" id="content"></main>
+</div>
+
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<script src="./admin.js"></script>
+</body>
+</html>

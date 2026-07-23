@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Elever Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#0B0B0C;color:#F5F5F3;font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  a{color:#F5F5F3;text-decoration:none;transition:color .3s ease;}
+  a:hover{color:#C1A078;}
+  ::selection{background:rgba(193,160,120,.92);color:#0B0B0C;}
+  input{font-family:inherit;}
+  ::placeholder{color:#6b6b70;}
+  .es-scroll::-webkit-scrollbar{height:0;width:0;}
+</style>
+<script src="./image-slot.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</helmet>
+<div style="background:#0B0B0C;min-height:100vh;">
+
+  <!-- ===================== GLOBAL HEADER ===================== -->
+  <header style="position:sticky;top:0;z-index:100;background:rgba(11,11,12,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.08);">
+    <div style="max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,44px);height:56px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+      <a onClick="{{ goHome }}" style="cursor:pointer;display:flex;align-items:center;gap:9px;color:#F5F5F3;"><img src="./elever-notes-logo-1-1--mrtmnih4-i1gh.png" alt="Elever" style="height:30px;width:auto;display:block;"><span style="font-size:19px;font-weight:500;letter-spacing:.14em;">ELEVER</span></a>
+      <nav style="display:flex;align-items:center;gap:clamp(16px,2.4vw,34px);">
+        <sc-for list="{{ navLinks }}" as="link" hint-placeholder-count="4">
+          <a onClick="{{ link.onClick }}" style="cursor:pointer;font-size:13px;font-weight:400;letter-spacing:.01em;padding:4px 0;border-bottom:1px solid {{ link.underline }};color:{{ link.color }};transition:color .3s ease;">{{ link.label }}</a>
+        </sc-for>
+      </nav>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F5F3" stroke-width="1.4" style="opacity:.85;"><path d="M6 8h12l-1 12H7L6 8z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+        <button onClick="{{ buy }}" style="cursor:pointer;background:#F5F5F3;color:#0B0B0C;border:none;border-radius:999px;font-size:12.5px;font-weight:500;letter-spacing:.01em;padding:9px 17px;white-space:nowrap;transition:opacity .3s ease;" style-hover="opacity:.85;">Buy Elever G1</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+  <!-- ============================================================ HOMEPAGE ============================================================ -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div>
+    <!-- HERO -->
+    <section style="max-width:1080px;margin:0 auto;padding:clamp(64px,10vh,120px) clamp(20px,4vw,44px) clamp(40px,6vh,72px);text-align:center;">
+      <p style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C1A078;margin:0 0 26px;">Elever Notes</p>
+      <h1 style="font-size:clamp(38px,6.4vw,76px);font-weight:200;line-height:1.05;letter-spacing:-.02em;margin:0 auto;max-width:14ch;text-wrap:balance;">Do the work that matters, every single day.</h1>
+      <p style="font-size:clamp(16px,1.6vw,19px);font-weight:300;line-height:1.6;color:#A1A1A6;max-width:52ch;margin:26px auto 40px;">A premium daily planner and a connected system, built to turn intention into focused execution — one deliberate day at a time.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:clamp(48px,7vh,80px);">
+        <button onClick="{{ buy }}" style="cursor:pointer;background:#F5F5F3;color:#0B0B0C;border:none;border-radius:999px;font-size:14px;font-weight:500;padding:13px 28px;" style-hover="opacity:.85;">Buy Elever G1</button>
+        <button onClick="{{ goProduct }}" style="cursor:pointer;white-space:nowrap;background:transparent;color:#F5F5F3;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:14px;font-weight:400;padding:13px 28px;transition:border-color .3s;" style-hover="border-color:rgba(255,255,255,.4);">Learn more</button>
+      </div>
+      <div data-reveal="" style="position:relative;max-width:760px;margin:0 auto;aspect-ratio:16/11;border-radius:16px;overflow:hidden;background:radial-gradient(120% 90% at 50% 30%, #1a1a1e 0%, #0d0d0f 70%);border:1px solid rgba(255,255,255,.08);">
+        <image-slot id="home-hero" shape="rect" placeholder="Drop the Elever G1 product image" fit="contain"></image-slot>
+      </div>
+    </section>
+
+    <!-- BRAND PROMISE -->
+    <section style="max-width:900px;margin:0 auto;padding:clamp(56px,9vh,120px) clamp(20px,4vw,44px);text-align:center;">
+      <h2 data-reveal="" style="font-size:clamp(26px,3.6vw,44px);font-weight:200;line-height:1.28;letter-spacing:-.015em;margin:0;text-wrap:balance;color:#F5F5F3;">Intention is easy. <span style="color:#A1A1A6;">Elever is built for the harder part — turning it into daily execution.</span></h2>
+    </section>
+
+    <!-- HIGHLIGHTS STRIP -->
+    <section style="max-width:1240px;margin:0 auto;padding:clamp(24px,3vh,40px) clamp(20px,4vw,44px) clamp(56px,8vh,100px);">
+      <p data-reveal="" style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#A1A1A6;margin:0 0 32px;">Get the highlights</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;">
+        <sc-for list="{{ highlights }}" as="h" hint-placeholder-count="4">
+          <div data-reveal="" style="background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px;">
+            <div style="aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:#0f0f11;border:1px solid rgba(255,255,255,.05);">
+              <image-slot id="{{ h.slot }}" shape="rect" placeholder="{{ h.label }}"></image-slot>
+            </div>
+            <div>
+              <h3 style="font-size:16px;font-weight:500;margin:0 0 7px;letter-spacing:-.01em;">{{ h.label }}</h3>
+              <p style="font-size:13.5px;line-height:1.55;color:#A1A1A6;margin:0;">{{ h.text }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- FLAGSHIP SHOWCASE -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,10vh,130px) clamp(20px,4vw,44px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(40px,6vw,80px);align-items:center;">
+        <div data-reveal="" style="position:relative;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:radial-gradient(120% 100% at 50% 20%, #1a1a1e 0%, #0d0d0f 70%);border:1px solid rgba(255,255,255,.08);">
+          <image-slot id="home-showcase" shape="rect" placeholder="Elever G1 — flagship shot" fit="contain"></image-slot>
+        </div>
+        <div data-reveal="">
+          <p style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#C1A078;margin:0 0 20px;">The first model</p>
+          <h2 style="font-size:clamp(30px,3.8vw,50px);font-weight:200;line-height:1.1;letter-spacing:-.02em;margin:0 0 22px;">Elever G1</h2>
+          <p style="font-size:16px;line-height:1.65;color:#A1A1A6;margin:0 0 20px;max-width:46ch;">Our flagship daily planner — premium paper, a considered page system, and a connected digital ecosystem. The G1 is the beginning of Elever Notes, engineered for people who take focused work seriously.</p>
+          <p style="font-size:15px;line-height:1.65;color:#A1A1A6;margin:0 0 32px;max-width:46ch;">A brand designed to grow. More Elever models will follow — the standard for calm, deliberate productivity starts here.</p>
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:28px;">
+            <span style="font-size:30px;font-weight:300;letter-spacing:-.01em;">{{ featuredProduct.displayPrice }}</span>
+            <span style="font-size:13px;color:#A1A1A6;">Free shipping · Undated</span>
+          </div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <button onClick="{{ buyFeatured }}" style="cursor:pointer;background:#F5F5F3;color:#0B0B0C;border:none;border-radius:999px;font-size:14px;font-weight:500;padding:13px 28px;" style-hover="opacity:.85;">Buy {{ featuredProduct.title }}</button>
+            <button onClick="{{ goProduct }}" style="cursor:pointer;white-space:nowrap;background:transparent;color:#F5F5F3;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:14px;padding:13px 28px;" style-hover="border-color:rgba(255,255,255,.4);">Explore the {{ featuredProduct.title }}</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY IT MAKES YOU PRODUCTIVE -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,10vh,130px) clamp(20px,4vw,44px);">
+        <h2 data-reveal="" style="font-size:clamp(26px,3.4vw,42px);font-weight:200;letter-spacing:-.02em;margin:0 0 12px;text-align:center;">Why it makes you productive</h2>
+        <p data-reveal="" style="font-size:16px;color:#A1A1A6;text-align:center;margin:0 auto 56px;max-width:46ch;line-height:1.6;">Four habits, built into the structure of every page.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
+          <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="4">
+            <div data-reveal="" style="background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px 24px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#0f0f11;border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;margin-bottom:20px;color:#C1A078;font-size:20px;">{{ b.icon }}</div>
+              <h3 style="font-size:17px;font-weight:500;margin:0 0 9px;letter-spacing:-.01em;">{{ b.title }}</h3>
+              <p style="font-size:14px;line-height:1.6;color:#A1A1A6;margin:0;">{{ b.text }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACTIVATION ECOSYSTEM TEASER -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#0d0d0f 0%,#111113 100%);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,10vh,130px) clamp(20px,4vw,44px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(40px,6vw,72px);align-items:center;">
+        <div data-reveal="">
+          <p style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#C1A078;margin:0 0 20px;">The Elever ecosystem</p>
+          <h2 style="font-size:clamp(28px,3.6vw,46px);font-weight:200;line-height:1.12;letter-spacing:-.02em;margin:0 0 20px;">Scan. Activate. Unlock your year.</h2>
+          <p style="font-size:16px;line-height:1.65;color:#A1A1A6;margin:0 0 32px;max-width:44ch;">A QR code inside your planner connects the paper to a quiet digital system — register your 365 days and unlock free rewards, then get reminded before your year runs out.</p>
+          <a onClick="{{ goFeatures }}" style="cursor:pointer;font-size:14px;color:#F5F5F3;border-bottom:1px solid #C1A078;padding-bottom:3px;">See how it works →</a>
+        </div>
+        <div data-reveal="" style="display:grid;grid-template-columns:1fr 1.2fr;gap:16px;align-items:center;">
+          <div style="aspect-ratio:1;border-radius:14px;overflow:hidden;background:#141416;border:1px solid rgba(255,255,255,.08);"><image-slot id="home-qr" shape="rect" placeholder="QR code"></image-slot></div>
+          <div style="aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:#141416;border:1px solid rgba(255,255,255,.08);"><image-slot id="home-phone" shape="rect" placeholder="Phone / app screen"></image-slot></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHO IT IS FOR -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:900px;margin:0 auto;padding:clamp(64px,10vh,130px) clamp(20px,4vw,44px);text-align:center;">
+        <p data-reveal="" style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#A1A1A6;margin:0 0 24px;">Who it's for</p>
+        <h2 data-reveal="" style="font-size:clamp(24px,3vw,38px);font-weight:200;line-height:1.35;letter-spacing:-.015em;margin:0;text-wrap:balance;">
+          <sc-for list="{{ audience }}" as="a" hint-placeholder-count="6"><span style="color:{{ a.color }};">{{ a.text }}</span></sc-for>
+        </h2>
+      </div>
+    </section>
+
+    <!-- REVIEWS TEASER -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,10vh,130px) clamp(20px,4vw,44px);">
+        <div data-reveal="" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:44px;">
+          <div>
+            <h2 style="font-size:clamp(26px,3.4vw,42px);font-weight:200;letter-spacing:-.02em;margin:0 0 10px;">Loved by focused people</h2>
+            <p style="font-size:15px;color:#A1A1A6;margin:0;">4.9 average · 2,400+ reviews</p>
+          </div>
+          <a onClick="{{ goReviews }}" style="cursor:pointer;font-size:14px;border-bottom:1px solid #C1A078;padding-bottom:3px;white-space:nowrap;">Read all reviews →</a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+          <sc-for list="{{ teaserReviews }}" as="r" hint-placeholder-count="3">
+            <div data-reveal="" style="background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:26px;">
+              <div style="color:#C1A078;font-size:13px;letter-spacing:.15em;margin-bottom:16px;">{{ r.stars }}</div>
+              <p style="font-size:15px;line-height:1.6;color:#F5F5F3;margin:0 0 22px;font-weight:300;">“{{ r.quote }}”</p>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#0f0f11;flex-shrink:0;"><image-slot id="{{ r.slot }}" shape="circle" placeholder=""></image-slot></div>
+                <div><div style="font-size:13.5px;font-weight:500;">{{ r.name }}</div><div style="font-size:12px;color:#A1A1A6;">{{ r.role }}</div></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:900px;margin:0 auto;padding:clamp(72px,12vh,150px) clamp(20px,4vw,44px);text-align:center;">
+        <div data-reveal="" style="max-width:380px;margin:0 auto 44px;aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:radial-gradient(120% 100% at 50% 20%, #1a1a1e 0%, #0d0d0f 70%);border:1px solid rgba(255,255,255,.08);"><image-slot id="home-cta" shape="rect" placeholder="Elever G1" fit="contain"></image-slot></div>
+        <h2 data-reveal="" style="font-size:clamp(30px,4.4vw,58px);font-weight:200;line-height:1.08;letter-spacing:-.02em;margin:0 0 34px;text-wrap:balance;">Make this your most productive year.</h2>
+        <button data-reveal="" onClick="{{ buyFeatured }}" style="cursor:pointer;background:#F5F5F3;color:#0B0B0C;border:none;border-radius:999px;font-size:15px;font-weight:500;padding:15px 34px;" style-hover="opacity:.85;">Buy {{ featuredProduct.title }} · {{ featuredProduct.displayPrice }}</button>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ===================== SHOP ===================== -->
+  <sc-if value="{{ isShop }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <sc-if value="{{ shopListing }}" hint-placeholder-val="{{ true }}">
+    <section style="max-width:1240px;margin:0 auto;padding:clamp(72px,10vh,120px) clamp(20px,4vw,44px) clamp(24px,4vh,56px);text-align:center;">
+      <p data-reveal="" style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C1A078;margin:0 0 18px;">Shop</p>
+      <h1 data-reveal="" style="font-size:clamp(30px,4.4vw,52px);font-weight:200;line-height:1.1;letter-spacing:-.02em;margin:0;text-wrap:balance;">Considered tools, built to last.</h1>
+    </section>
+    <section style="max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,44px) clamp(72px,10vh,120px);">
+      <sc-if value="{{ shopLoading }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:60px 0;color:#A1A1A6;font-size:14px;">Loading products…</div>
+      </sc-if>
+      <sc-if value="{{ shopError }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:60px 0;color:#f5b7b7;font-size:14px;">{{ shopError }}</div>
+      </sc-if>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;">
+        <sc-for list="{{ shopCards }}" as="card" hint-placeholder-count="3">
+          <div onClick="{{ card.onView }}" style="cursor:pointer;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:#111113;">
+            <div style="aspect-ratio:4/3;background:radial-gradient(120% 100% at 50% 20%, #1a1a1e, #0d0d0f 74%);">
+              <sc-if value="{{ card.hasImage }}" hint-placeholder-val="{{ true }}">
+                <img src="{{ card.imageUrl }}" style="width:100%;height:100%;object-fit:cover;display:block;">
+              </sc-if>
+            </div>
+            <div style="padding:22px 22px 26px;">
+              <h3 style="font-size:18px;font-weight:500;margin:0 0 8px;">{{ card.title }}</h3>
+              <p style="font-size:13.5px;color:#A1A1A6;line-height:1.6;margin:0 0 16px;">{{ card.shortDescription }}</p>
+              <div style="display:flex;align-items:baseline;gap:10px;">
+                <span style="font-size:17px;font-weight:500;color:#C1A078;">{{ card.displayPrice }}</span>
+                <sc-if value="{{ card.hasSale }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:14px;color:#6b6b70;text-decoration:line-through;">{{ card.compareAtLabel }}</span>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section id="shop-reviews" style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,10vh,120px) clamp(20px,4vw,44px) clamp(48px,6vh,72px);">
+        <p data-reveal="" style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C1A078;margin:0 0 20px;">Reviews</p>
+        <h2 data-reveal="" style="font-size:clamp(28px,3.6vw,44px);font-weight:200;line-height:1.1;letter-spacing:-.02em;margin:0 0 clamp(32px,5vh,52px);max-width:18ch;">What Elever owners say.</h2>
+        <div data-reveal="" style="display:grid;grid-template-columns:auto 1fr;gap:clamp(32px,6vw,72px);align-items:center;background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:clamp(28px,4vw,44px);flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-size:clamp(56px,8vw,88px);font-weight:200;line-height:1;">4.9</div>
+            <div style="color:#C1A078;font-size:17px;letter-spacing:.14em;margin:10px 0 6px;">★★★★★</div>
+            <div style="font-size:13px;color:#A1A1A6;">2,431 reviews</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;min-width:220px;">
+            <sc-for list="{{ ratingBreakdown }}" as="rb" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:14px;">
+                <span style="font-size:12px;color:#A1A1A6;width:32px;">{{ rb.star }}★</span>
+                <div style="flex:1;height:5px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;"><div style="height:100%;width:{{ rb.pct }};background:#C1A078;border-radius:999px;"></div></div>
+                <span style="font-size:12px;color:#A1A1A6;width:38px;text-align:right;">{{ rb.pct }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,44px) clamp(64px,9vh,110px);">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px;">
+          <span style="font-size:14px;color:#A1A1A6;">Showing {{ reviewCount }} reviews</span>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{ sortOptions }}" as="so" hint-placeholder-count="2">
+              <button onClick="{{ so.onClick }}" style="cursor:pointer;background:{{ so.bg }};color:{{ so.color }};border:none;border-radius:999px;font-size:13px;padding:8px 16px;font-family:inherit;transition:all .3s;">{{ so.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="columns:3 300px;column-gap:16px;">
+          <sc-for list="{{ allReviews }}" as="r" hint-placeholder-count="9">
+            <div data-reveal="" style="break-inside:avoid;margin-bottom:16px;background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:26px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <div style="color:#C1A078;font-size:13px;letter-spacing:.14em;">{{ r.stars }}</div>
+                <span style="font-size:12px;color:#6b6b70;">{{ r.date }}</span>
+              </div>
+              <p style="font-size:15px;line-height:1.65;color:#F5F5F3;margin:0 0 22px;font-weight:300;">“{{ r.quote }}”</p>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;overflow:hidden;background:#0f0f11;flex-shrink:0;"><image-slot id="{{ r.slot }}" shape="circle" placeholder=""></image-slot></div>
+                <div><div style="font-size:14px;font-weight:500;">{{ r.name }}</div><div style="font-size:12px;color:#A1A1A6;">{{ r.role }}</div></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <sc-if value="{{ shopHasSlug }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ shopNotFound }}" hint-placeholder-val="{{ false }}">
+        <section style="max-width:600px;margin:0 auto;padding:clamp(100px,14vh,160px) clamp(20px,4vw,44px);text-align:center;">
+          <p style="color:#A1A1A6;margin:0 0 20px;">We couldn't find that product.</p>
+          <button onClick="{{ goShop }}" style="cursor:pointer;background:#C1A078;color:#0B0B0C;border:none;border-radius:999px;padding:11px 22px;font-size:13.5px;font-weight:500;">Back to shop</button>
+        </section>
+      </sc-if>
+      <sc-if value="{{ activeProduct }}" hint-placeholder-val="{{ false }}">
+        <section style="max-width:1080px;margin:0 auto;padding:clamp(56px,8vh,96px) clamp(20px,4vw,44px) clamp(72px,10vh,120px);display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(36px,5vw,64px);align-items:start;">
+          <div style="aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:radial-gradient(120% 100% at 50% 20%, #1a1a1e, #0d0d0f 74%);border:1px solid rgba(255,255,255,.08);">
+            <sc-if value="{{ activeProduct.hasImage }}" hint-placeholder-val="{{ true }}">
+              <img src="{{ activeProduct.imageUrl }}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </sc-if>
+          </div>
+          <div>
+            <button onClick="{{ goShop }}" style="cursor:pointer;background:none;border:none;color:#A1A1A6;font-size:13px;padding:0;margin:0 0 18px;">← Back to shop</button>
+            <h1 style="font-size:clamp(28px,3.6vw,40px);font-weight:300;line-height:1.15;margin:0 0 14px;">{{ activeProduct.title }}</h1>
+            <p style="font-size:15px;color:#c9c9cc;line-height:1.7;margin:0 0 22px;">{{ activeProduct.shortDescription }}</p>
+            <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:28px;">
+              <span style="font-size:26px;font-weight:500;color:#C1A078;">{{ activeProduct.displayPrice }}</span>
+              <sc-if value="{{ activeProduct.hasSale }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:16px;color:#6b6b70;text-decoration:line-through;">{{ activeProduct.compareAtLabel }}</span>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ orderSuccess }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid rgba(193,160,120,.35);background:rgba(193,160,120,.08);border-radius:12px;padding:20px 22px;">
+                <p style="margin:0 0 6px;font-weight:500;">Order placed.</p>
+                <p style="margin:0;font-size:13.5px;color:#c9c9cc;line-height:1.6;">We'll contact you to confirm your Cash on Delivery order for {{ orderSuccess.qty }} × {{ orderSuccess.title }}.</p>
+                <button onClick="{{ buyAgain }}" style="cursor:pointer;margin-top:16px;background:none;border:1px solid rgba(255,255,255,.18);color:#F5F5F3;border-radius:999px;padding:9px 18px;font-size:13px;">Order something else</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ noOrderSuccess }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ checkoutClosed }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ openCheckout }}" style="cursor:pointer;background:#C1A078;color:#0B0B0C;border:none;border-radius:999px;padding:13px 26px;font-size:14px;font-weight:500;">Buy now · Cash on Delivery</button>
+              </sc-if>
+              <sc-if value="{{ checkoutOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px;">
+                  <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+                    <span style="font-size:13px;color:#A1A1A6;">Quantity</span>
+                    <div style="display:flex;align-items:center;border:1px solid rgba(255,255,255,.14);border-radius:999px;">
+                      <button onClick="{{ qtyDec }}" style="cursor:pointer;background:none;border:none;color:#F5F5F3;width:32px;height:32px;font-size:16px;">–</button>
+                      <span style="width:28px;text-align:center;font-size:14px;">{{ checkoutQty }}</span>
+                      <button onClick="{{ qtyInc }}" style="cursor:pointer;background:none;border:none;color:#F5F5F3;width:32px;height:32px;font-size:16px;">+</button>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:12px;">
+                    <input placeholder="Full name" value="{{ checkoutName }}" onChange="{{ onCheckoutNameChange }}" style="background:#141416;border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:11px 14px;color:#F5F5F3;font-size:14px;">
+                    <input placeholder="Phone number" value="{{ checkoutPhone }}" onChange="{{ onCheckoutPhoneChange }}" style="background:#141416;border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:11px 14px;color:#F5F5F3;font-size:14px;">
+                    <textarea placeholder="Full delivery address" rows="3" value="{{ checkoutAddress }}" onChange="{{ onCheckoutAddressChange }}" style="background:#141416;border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:11px 14px;color:#F5F5F3;font-size:14px;resize:vertical;"></textarea>
+                  </div>
+                  <sc-if value="{{ checkoutError }}" hint-placeholder-val="{{ false }}">
+                    <p style="color:#f5b7b7;font-size:13px;margin:14px 0 0;">{{ checkoutError }}</p>
+                  </sc-if>
+                  <button onClick="{{ submitOrderNow }}" style="cursor:pointer;margin-top:18px;background:#C1A078;color:#0B0B0C;border:none;border-radius:999px;padding:12px 24px;font-size:14px;font-weight:500;width:100%;">Place order — Cash on Delivery</button>
+                </div>
+              </sc-if>
+            </sc-if>
+          </div>
+        </section>
+      </sc-if>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- ===================== FEATURES ===================== -->
+  <sc-if value="{{ isFeatures }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <section style="max-width:900px;margin:0 auto;padding:clamp(72px,10vh,120px) clamp(20px,4vw,44px) clamp(48px,7vh,80px);text-align:center;">
+      <p data-reveal="" style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C1A078;margin:0 0 18px;">Features</p>
+      <h1 data-reveal="" style="font-size:clamp(30px,4.4vw,52px);font-weight:200;line-height:1.1;letter-spacing:-.02em;margin:0 0 20px;text-wrap:balance;">Built to remove friction, not add features.</h1>
+      <p data-reveal="" style="font-size:16px;color:#A1A1A6;line-height:1.65;max-width:56ch;margin:0 auto;">A calm system for deciding what matters, doing it, and closing the loop — every Elever product is designed around the same four moves.</p>
+    </section>
+
+    <section style="max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,44px) clamp(64px,9vh,110px);">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
+        <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="4">
+          <div data-reveal="" style="border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px 24px;">
+            <div style="font-size:22px;color:#C1A078;margin-bottom:16px;">{{ b.icon }}</div>
+            <h3 style="font-size:16.5px;font-weight:500;margin:0 0 10px;">{{ b.title }}</h3>
+            <p style="font-size:14px;color:#A1A1A6;line-height:1.6;margin:0;">{{ b.text }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,9vh,110px) clamp(20px,4vw,44px);">
+        <div style="max-width:640px;margin:0 auto 48px;text-align:center;">
+          <p data-reveal="" style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#A1A1A6;margin:0 0 20px;">Why we build this way</p>
+          <h2 data-reveal="" style="font-size:clamp(24px,3vw,38px);font-weight:200;line-height:1.25;letter-spacing:-.015em;margin:0;">Research we design around — not proof, just good reasons.</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;">
+          <sc-for list="{{ research }}" as="r" hint-placeholder-count="4">
+            <div data-reveal="" style="border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:26px 24px;">
+              <div style="font-size:30px;font-weight:200;color:#C1A078;margin:0 0 12px;">{{ r.stat }}</div>
+              <h3 style="font-size:15.5px;font-weight:500;margin:0 0 10px;">{{ r.title }}</h3>
+              <p style="font-size:13.5px;color:#c9c9cc;line-height:1.6;margin:0 0 12px;">{{ r.text }}</p>
+              <p style="font-size:12px;color:#6b6b70;line-height:1.5;margin:0;">{{ r.source }} — {{ r.disclaimer }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- ECOSYSTEM -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,9vh,110px) clamp(20px,4vw,44px);">
+        <div style="max-width:640px;margin:0 auto 48px;text-align:center;">
+          <p data-reveal="" style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#A1A1A6;margin:0 0 20px;">The activation system</p>
+          <h2 data-reveal="" style="font-size:clamp(24px,3vw,38px);font-weight:200;line-height:1.25;letter-spacing:-.015em;margin:0;">One scan connects the page to the system.</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
+          <sc-for list="{{ ecosystem }}" as="e" hint-placeholder-count="4">
+            <div data-reveal="" style="text-align:center;padding:8px;">
+              <div style="font-size:24px;color:#C1A078;margin-bottom:14px;">{{ e.icon }}</div>
+              <h3 style="font-size:15.5px;font-weight:500;margin:0 0 10px;">{{ e.title }}</h3>
+              <p style="font-size:13.5px;color:#A1A1A6;line-height:1.6;margin:0;">{{ e.text }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <div style="text-align:center;margin-top:44px;">
+          <button onClick="{{ goActivate }}" style="cursor:pointer;background:none;border:1px solid rgba(255,255,255,.18);color:#F5F5F3;border-radius:999px;padding:11px 22px;font-size:13.5px;">Activate a planner →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);text-align:center;padding:clamp(64px,9vh,110px) clamp(20px,4vw,44px);">
+      <h2 data-reveal="" style="font-size:clamp(24px,3vw,36px);font-weight:200;margin:0 0 24px;">See it in the Elever G1.</h2>
+      <button onClick="{{ goShop }}" style="cursor:pointer;background:#C1A078;color:#0B0B0C;border:none;border-radius:999px;padding:13px 28px;font-size:14px;font-weight:500;">Shop Elever G1</button>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <!-- ABOUT HERO -->
+    <section style="max-width:900px;margin:0 auto;padding:clamp(72px,12vh,150px) clamp(20px,4vw,44px) clamp(48px,7vh,80px);text-align:center;">
+      <p data-reveal="" style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C1A078;margin:0 0 26px;">About Elever Notes</p>
+      <h1 data-reveal="" style="font-size:clamp(34px,5vw,64px);font-weight:200;line-height:1.08;letter-spacing:-.02em;margin:0;text-wrap:balance;">We build calm tools for people who take their work seriously.</h1>
+    </section>
+    <section style="max-width:1080px;margin:0 auto;padding:0 clamp(20px,4vw,44px) clamp(56px,8vh,100px);">
+      <div data-reveal="" style="aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:radial-gradient(120% 100% at 50% 20%, #1a1a1e, #0d0d0f 74%);border:1px solid rgba(255,255,255,.08);"><image-slot id="about-hero" shape="rect" placeholder="Brand image"></image-slot></div>
+    </section>
+
+    <!-- STORY -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:720px;margin:0 auto;padding:clamp(64px,10vh,120px) clamp(20px,4vw,44px);">
+        <p data-reveal="" style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#A1A1A6;margin:0 0 32px;">Our story</p>
+        <div style="display:flex;flex-direction:column;gap:28px;">
+          <p data-reveal="" style="font-size:clamp(18px,2vw,22px);font-weight:200;line-height:1.6;color:#F5F5F3;margin:0;">Elever Notes exists for a simple reason: focused daily work compounds into a meaningful year. Most tools add noise. We wanted to remove it.</p>
+          <p data-reveal="" style="font-size:16px;line-height:1.75;color:#A1A1A6;margin:0;">So we built a planner around a single discipline — decide what matters, then execute — and paired it with a quiet digital system that keeps the habit alive across all 365 days. Paper for intention and reflection; a connected ecosystem for continuity and rewards.</p>
+          <p data-reveal="" style="font-size:16px;line-height:1.75;color:#A1A1A6;margin:0;">The Elever G1 is our first model and the beginning of a growing product line. It sets the standard we intend to build on — premium, restrained, and engineered for real focus. More Elever products will follow, each held to the same bar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VALUES -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,10vh,120px) clamp(20px,4vw,44px);">
+        <h2 data-reveal="" style="font-size:clamp(24px,3vw,38px);font-weight:200;letter-spacing:-.02em;margin:0 0 48px;text-align:center;">What we value</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;">
+          <sc-for list="{{ values }}" as="v" hint-placeholder-count="4">
+            <div data-reveal="" style="background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:30px 26px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#0f0f11;border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;margin-bottom:22px;color:#C1A078;font-size:20px;">{{ v.icon }}</div>
+              <h3 style="font-size:17px;font-weight:500;margin:0 0 10px;letter-spacing:-.01em;">{{ v.title }}</h3>
+              <p style="font-size:14px;line-height:1.6;color:#A1A1A6;margin:0;">{{ v.text }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHILOSOPHY -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#0d0d0f,#101012);">
+      <div style="max-width:820px;margin:0 auto;padding:clamp(64px,10vh,120px) clamp(20px,4vw,44px);text-align:center;">
+        <p data-reveal="" style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#C1A078;margin:0 0 26px;">The philosophy</p>
+        <h2 data-reveal="" style="font-size:clamp(24px,3vw,40px);font-weight:200;line-height:1.3;letter-spacing:-.015em;margin:0 0 24px;text-wrap:balance;">Evidence over hype.</h2>
+        <p data-reveal="" style="font-size:16px;line-height:1.75;color:#A1A1A6;margin:0 auto;max-width:56ch;">Every part of the G1 — from the focus box to the reflection prompt — is grounded in respected research on attention, habit formation, and time management. The same thinking shapes the free productivity guide we include with every planner. We design for what actually works, not what looks busy.</p>
+      </div>
+    </section>
+
+    <!-- CLOSING CTA -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:820px;margin:0 auto;padding:clamp(72px,12vh,140px) clamp(20px,4vw,44px);text-align:center;">
+        <h2 data-reveal="" style="font-size:clamp(28px,4vw,50px);font-weight:200;line-height:1.1;letter-spacing:-.02em;margin:0 0 32px;text-wrap:balance;">This is where it begins.</h2>
+        <button data-reveal="" onClick="{{ goProduct }}" style="cursor:pointer;background:#F5F5F3;color:#0B0B0C;border:none;border-radius:999px;font-size:15px;font-weight:500;padding:15px 34px;" style-hover="opacity:.85;">Explore the Elever G1</button>
+      </div>
+    </section>
+  </div>
+</sc-if>
+  <!-- ============================================================ ACTIVATE YOUR PLANNER ============================================================ -->
+  <sc-if value="{{ isActivate }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <section style="max-width:900px;margin:0 auto;padding:clamp(64px,10vh,120px) clamp(20px,4vw,44px) clamp(40px,6vh,64px);text-align:center;">
+      <p data-reveal="" style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C1A078;margin:0 0 24px;">Activation</p>
+      <h1 data-reveal="" style="font-size:clamp(34px,5vw,62px);font-weight:200;line-height:1.06;letter-spacing:-.02em;margin:0 0 22px;text-wrap:balance;">Activate your planner.</h1>
+      <p data-reveal="" style="font-size:17px;line-height:1.65;color:#A1A1A6;margin:0 auto;max-width:52ch;">Connect your Elever G1 to the Elever system in under a minute — register your year, unlock your rewards, and we'll remind you before it ends.</p>
+    </section>
+
+    <!-- ACTIVATE FORM -->
+    <section style="max-width:520px;margin:0 auto;padding:0 clamp(20px,4vw,44px) clamp(56px,8vh,90px);">
+      <div data-reveal="" style="background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:clamp(28px,4vw,40px);">
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-bottom:28px;">
+          <div style="width:88px;height:88px;border-radius:14px;overflow:hidden;background:#0f0f11;border:1px solid rgba(255,255,255,.06);flex-shrink:0;"><image-slot id="act-qr" shape="rect" placeholder="QR"></image-slot></div>
+          <p style="font-size:14px;line-height:1.6;color:#A1A1A6;margin:0;">Scan the QR code inside the front cover of your G1, then fill in your details below to activate.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <input placeholder="Full name" value="{{ activateName }}" onChange="{{ onActivateNameChange }}" style="background:#0f0f11;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#F5F5F3;font-size:14px;padding:13px 16px;outline:none;min-width:0;width:100%;">
+          <input placeholder="Phone number" value="{{ activatePhone }}" onChange="{{ onActivatePhoneChange }}" style="background:#0f0f11;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#F5F5F3;font-size:14px;padding:13px 16px;outline:none;min-width:0;width:100%;">
+          <input type="email" placeholder="Email address" value="{{ activateEmail }}" onChange="{{ onActivateEmailChange }}" style="background:#0f0f11;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#F5F5F3;font-size:14px;padding:13px 16px;outline:none;min-width:0;width:100%;">
+          <sc-if value="{{ activateError }}" hint-placeholder-val="{{ false }}">
+            <p style="color:#f5b7b7;font-size:13px;margin:0;">{{ activateError }}</p>
+          </sc-if>
+          <button onClick="{{ submitActivationNow }}" style="cursor:pointer;background:#F5F5F3;color:#0B0B0C;border:none;border-radius:12px;font-size:14px;font-weight:500;padding:14px;margin-top:4px;" style-hover="opacity:.85;">Activate my year</button>
+        </div>
+        <p style="font-size:12px;color:#6b6b70;text-align:center;margin:18px 0 0;">Registering activates your 365 days and all included rewards.</p>
+      </div>
+    </section>
+
+    <!-- STEPS -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(56px,8vh,100px) clamp(20px,4vw,44px);">
+        <h2 data-reveal="" style="font-size:clamp(24px,3vw,38px);font-weight:200;letter-spacing:-.02em;margin:0 0 44px;text-align:center;">How activation works</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;">
+          <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+            <div data-reveal="" style="background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;">
+              <span style="font-size:13px;color:#C1A078;letter-spacing:.1em;">STEP {{ st.n }}</span>
+              <h3 style="font-size:16px;font-weight:500;margin:0;letter-spacing:-.01em;">{{ st.label }}</h3>
+              <p style="font-size:14px;line-height:1.6;color:#A1A1A6;margin:0;">{{ st.text }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- HELP -->
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:820px;margin:0 auto;padding:clamp(56px,8vh,100px) clamp(20px,4vw,44px);text-align:center;">
+        <h2 data-reveal="" style="font-size:clamp(22px,2.6vw,32px);font-weight:200;letter-spacing:-.015em;margin:0 0 16px;">Having trouble activating?</h2>
+        <p data-reveal="" style="font-size:15px;color:#A1A1A6;margin:0 0 28px;">Our team is glad to help — most codes activate on the first try.</p>
+        <div data-reveal="" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+          <button onClick="{{ goContact }}" style="cursor:pointer;white-space:nowrap;background:transparent;color:#F5F5F3;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:14px;padding:12px 26px;" style-hover="border-color:rgba(255,255,255,.4);">Contact support</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <sc-if value="{{ activatePopup }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:20px;z-index:200;">
+      <div style="background:#141416;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:clamp(32px,5vw,48px);max-width:440px;width:100%;text-align:center;">
+        <p style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#C1A078;margin:0 0 16px;">Activated</p>
+        <h2 style="font-size:clamp(22px,3vw,30px);font-weight:300;line-height:1.2;margin:0 0 14px;">Congratulations, {{ activatePopup.name }}.</h2>
+        <p style="font-size:15px;color:#c9c9cc;line-height:1.6;margin:0 0 28px;">Your planner is activated. You've unlocked {{ activatePopup.discountText }} off your next purchase.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <sc-if value="{{ activatePopup.hasPdf }}" hint-placeholder-val="{{ false }}">
+            <a href="{{ activatePopup.pdfUrl }}" target="_blank" style="cursor:pointer;background:#C1A078;color:#0B0B0C;border-radius:999px;padding:13px;font-size:14px;font-weight:500;">Download your free PDF</a>
+          </sc-if>
+          <sc-if value="{{ activatePopup.hasApp }}" hint-placeholder-val="{{ false }}">
+            <a href="{{ activatePopup.playstoreUrl }}" target="_blank" style="cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.18);color:#F5F5F3;border-radius:999px;padding:13px;font-size:14px;font-weight:500;">Get the Premium To-Do App — free forever</a>
+          </sc-if>
+          <button onClick="{{ closeActivatePopupNow }}" style="cursor:pointer;background:none;border:none;color:#A1A1A6;font-size:13px;margin-top:6px;">Close</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  </sc-if>
+
+  <!-- ============================================================ CONTACT ============================================================ -->
+  <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <section style="max-width:1240px;margin:0 auto;padding:clamp(64px,10vh,120px) clamp(20px,4vw,44px) clamp(56px,8vh,100px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(40px,6vw,80px);align-items:start;">
+      <div data-reveal="">
+        <p style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C1A078;margin:0 0 24px;">Contact</p>
+        <h1 style="font-size:clamp(32px,4.4vw,56px);font-weight:200;line-height:1.06;letter-spacing:-.02em;margin:0 0 22px;">We're here to help.</h1>
+        <p style="font-size:16px;line-height:1.65;color:#A1A1A6;margin:0 0 40px;max-width:42ch;">Questions about the G1, your order, activation, or the ecosystem — send a note and we'll reply within one business day.</p>
+        <div style="display:flex;flex-direction:column;gap:24px;">
+          <sc-for list="{{ contactMethods }}" as="m" hint-placeholder-count="3">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#141416;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:#C1A078;flex-shrink:0;font-size:18px;">{{ m.icon }}</div>
+              <div><div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#A1A1A6;margin-bottom:6px;">{{ m.label }}</div><div style="font-size:15px;color:#F5F5F3;">{{ m.value }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div data-reveal="" style="background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:clamp(28px,4vw,40px);">
+        <sc-if value="{{ contactSuccess }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:24px 0;">
+            <p style="font-size:17px;font-weight:500;margin:0 0 10px;">Message sent.</p>
+            <p style="font-size:14px;color:#A1A1A6;line-height:1.6;margin:0;">Thanks for reaching out — we'll reply within one business day.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ contactNotSuccess }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <input placeholder="First name" value="{{ contactFirstName }}" onChange="{{ onContactFirstNameChange }}" style="background:#0f0f11;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#F5F5F3;font-size:14px;padding:13px 16px;outline:none;min-width:0;width:100%;">
+            <input placeholder="Last name" value="{{ contactLastName }}" onChange="{{ onContactLastNameChange }}" style="background:#0f0f11;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#F5F5F3;font-size:14px;padding:13px 16px;outline:none;min-width:0;width:100%;">
+          </div>
+          <input type="email" placeholder="Email address" value="{{ contactEmail }}" onChange="{{ onContactEmailChange }}" style="background:#0f0f11;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#F5F5F3;font-size:14px;padding:13px 16px;outline:none;min-width:0;width:100%;">
+          <select value="{{ contactSubject }}" onChange="{{ onContactSubjectChange }}" style="background:#0f0f11;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#A1A1A6;font-size:14px;padding:13px 16px;outline:none;font-family:inherit;min-width:0;width:100%;">
+            <option value="" style="background:#141416;">What is this about?</option>
+            <option value="Order or shipping" style="background:#141416;">Order or shipping</option>
+            <option value="Activation help" style="background:#141416;">Activation help</option>
+            <option value="Rewards & app" style="background:#141416;">Rewards & app</option>
+            <option value="Returns" style="background:#141416;">Returns</option>
+            <option value="Something else" style="background:#141416;">Something else</option>
+          </select>
+          <textarea placeholder="Your message" rows="5" value="{{ contactMessage }}" onChange="{{ onContactMessageChange }}" style="background:#0f0f11;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#F5F5F3;font-size:14px;padding:13px 16px;outline:none;font-family:inherit;resize:vertical;min-width:0;width:100%;"></textarea>
+          <sc-if value="{{ contactError }}" hint-placeholder-val="{{ false }}">
+            <p style="color:#f5b7b7;font-size:13px;margin:0;">{{ contactError }}</p>
+          </sc-if>
+          <button onClick="{{ submitMessageNow }}" style="cursor:pointer;background:#F5F5F3;color:#0B0B0C;border:none;border-radius:12px;font-size:14px;font-weight:500;padding:14px;margin-top:4px;" style-hover="opacity:.85;">Send message</button>
+        </div>
+        </sc-if>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid rgba(255,255,255,.08);">
+      <div style="max-width:1240px;margin:0 auto;padding:clamp(48px,6vh,80px) clamp(20px,4vw,44px);display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+        <sc-for list="{{ contactLinks }}" as="c" hint-placeholder-count="3">
+          <button onClick="{{ c.onClick }}" style="cursor:pointer;text-align:left;background:#141416;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:26px 24px;font-family:inherit;transition:border-color .3s;" style-hover="border-color:rgba(255,255,255,.2);">
+            <h3 style="font-size:16px;font-weight:500;color:#F5F5F3;margin:0 0 8px;letter-spacing:-.01em;">{{ c.title }}</h3>
+            <p style="font-size:13.5px;color:#A1A1A6;margin:0;line-height:1.5;">{{ c.text }}</p>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  </main>
+
+  <!-- ===================== GLOBAL FOOTER ===================== -->
+  <footer style="border-top:1px solid rgba(255,255,255,.08);background:#0a0a0b;">
+    <div style="max-width:1240px;margin:0 auto;padding:clamp(56px,8vh,88px) clamp(20px,4vw,44px) 0;">
+      <div style="display:flex;align-items:center;gap:11px;margin:0 0 26px;"><img src="./elever-notes-logo-1-1--mrtmnut3-6tod.png" alt="Elever" style="height:34px;width:auto;display:block;"><span style="font-size:20px;font-weight:500;letter-spacing:.14em;color:#F5F5F3;">ELEVER</span></div>
+      <p style="font-size:clamp(18px,2.2vw,26px);font-weight:200;letter-spacing:-.01em;color:#F5F5F3;max-width:30ch;margin:0 0 clamp(48px,6vh,72px);line-height:1.35;">Elever Notes builds calm tools for focused, deliberate work.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:36px 24px;padding-bottom:clamp(40px,5vh,64px);border-bottom:1px solid rgba(255,255,255,.08);">
+        <sc-for list="{{ footerCols }}" as="col" hint-placeholder-count="4">
+          <div>
+            <h4 style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#F5F5F3;margin:0 0 18px;font-weight:500;">{{ col.title }}</h4>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ col.links }}" as="l" hint-placeholder-count="4"><li><a onClick="{{ l.onClick }}" style="cursor:pointer;font-size:13.5px;color:#A1A1A6;" style-hover="color:#F5F5F3;">{{ l.label }}</a></li></sc-for>
+            </ul>
+          </div>
+        </sc-for>
+      </div>
+      <!-- Newsletter -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;padding:clamp(32px,4vh,48px) 0;border-bottom:1px solid rgba(255,255,255,.08);">
+        <span style="font-size:15px;font-weight:400;color:#F5F5F3;">Start your most productive year.</span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input type="email" placeholder="Email address" style="background:#141416;border:1px solid rgba(255,255,255,.12);border-radius:999px;color:#F5F5F3;font-size:13.5px;padding:11px 18px;min-width:220px;outline:none;">
+          <button style="cursor:pointer;background:#F5F5F3;color:#0B0B0C;border:none;border-radius:999px;font-size:13px;font-weight:500;padding:11px 22px;white-space:nowrap;" style-hover="opacity:.85;">Subscribe</button>
+        </div>
+      </div>
+      <!-- Fine print -->
+      <p style="font-size:11px;line-height:1.7;color:#6b6b70;margin:28px 0 0;max-width:none;">Elever G1 is undated and can begin on any day. Digital activation, rewards, the Elever To-Do App and the free productivity PDF are provided to registered planner owners; availability and terms may change. The 15% loyalty reward applies toward a future Elever planner. Placeholder figures and specifications shown are for design purposes and subject to change.</p>
+      <!-- Bottom bar -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:26px 0 34px;">
+        <span style="font-size:12px;color:#6b6b70;">© 2026 Elever Notes. All rights reserved.</span>
+        <div style="display:flex;align-items:center;gap:22px;">
+          <a style="cursor:pointer;font-size:12px;color:#A1A1A6;">Privacy Policy</a>
+          <a style="cursor:pointer;font-size:12px;color:#A1A1A6;">Terms</a>
+          <div style="display:flex;gap:14px;align-items:center;">
+            <a style="cursor:pointer;" aria-label="X"><svg width="15" height="15" viewBox="0 0 24 24" fill="#A1A1A6"><path d="M18.244 2H21.5l-7.5 8.57L23 22h-6.9l-5.4-7.06L4.5 22H1.24l8.02-9.17L1 2h7.08l4.88 6.45L18.244 2zm-1.21 18h1.9L7.05 3.9H5.02L17.034 20z"></path></svg></a>
+            <a style="cursor:pointer;" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A1A1A6" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r=".6" fill="#A1A1A6"></circle></svg></a>
+            <a style="cursor:pointer;" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="#A1A1A6"><path d="M4.98 3.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21H18.6v-5.6c0-1.34-.02-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21H10z"></path></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:900}}">
+const SUPABASE_URL = 'https://ksdprcoizcfisfhvpacm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzZHByY29pemNmaXNmaHZwYWNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDIzOTEsImV4cCI6MjEwMDM3ODM5MX0.Um184pLkjjJQ3AGkh1HMu6krGdeeEkgPQ3Qb7OxZAbM';
+let _sb = null;
+function sb(){
+  if (!_sb) {
+    if (!window.supabase) throw new Error('Supabase JS not loaded yet.');
+    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+  return _sb;
+}
+
+class Component extends DCLogic {
+  state = { ...this._parseHash(), reviewSort:'recent',
+    shopProducts:[], shopLoading:false, shopError:null,
+    checkoutOpen:false, checkoutQty:1, checkoutForm:{name:'',phone:'',address:''}, checkoutSubmitting:false, checkoutError:null, orderSuccess:null,
+    activateForm:{name:'',phone:'',email:''}, activateSubmitting:false, activateError:null, activatePopup:null,
+    contactForm:{firstName:'',lastName:'',email:'',subject:'',message:''}, contactSubmitting:false, contactError:null, contactSuccess:false };
+
+  componentDidMount(){
+    this._reveal();
+    this._syncMeta();
+    this._onHashChange = ()=>this.setState(this._parseHash());
+    window.addEventListener('hashchange', this._onHashChange);
+    this.loadProducts();
+  }
+  componentDidUpdate(){
+    this._reveal();
+    this._syncMeta();
+  }
+
+  _syncMeta(){
+    const { pageTitle, pageDescription } = this.renderVals();
+    if (document.title !== pageTitle) document.title = pageTitle;
+    let el = document.querySelector('meta[name="description"]');
+    if(!el){ el = document.createElement('meta'); el.setAttribute('name', 'description'); document.head.appendChild(el); }
+    if(el.getAttribute('content') !== pageDescription) el.setAttribute('content', pageDescription);
+  }
+  componentWillUnmount(){
+    this._unmounted = true;
+    if(this._onHashChange) window.removeEventListener('hashchange', this._onHashChange);
+  }
+
+  _parseHash(){
+    const known = ['home','about','features','shop','contact','activate'];
+    const h = (location.hash.slice(1) || '/').split('/').filter(Boolean);
+    if (h[0]==='shop' && h[1]) return { page:'shop', params:{slug:h[1]} };
+    if (known.includes(h[0])) return { page:h[0], params:{} };
+    return { page:'home', params:{} };
+  }
+
+  _reveal(){
+    const els = Array.from(document.querySelectorAll('[data-reveal]'));
+    els.forEach(el=>{ if(!el.__ri){ el.style.opacity='0'; el.style.transform='translateY(26px)'; el.style.transition='opacity .9s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1)'; el.__ri=true; }});
+    if(this._io) this._io.disconnect();
+    this._io = new IntersectionObserver((ents)=>{
+      ents.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='none'; this._io.unobserve(e.target); }});
+    }, {threshold:.12, rootMargin:'0px 0px -8% 0px'});
+    els.forEach(el=>{ if(el.style.opacity!=='1') this._io.observe(el); });
+  }
+
+  go(page, params){
+    const path = page==='shop' && params && params.slug ? '/shop/'+params.slug : '/'+(page==='home' ? '' : page);
+    if (location.hash.slice(1) !== path) location.hash = path;
+    this.setState({page, params: params||{}, checkoutOpen:false, checkoutError:null, orderSuccess:null});
+    window.scrollTo({top:0});
+    if (page==='shop') this.loadProducts();
+  }
+
+  async loadProducts(){
+    this.setState({shopLoading:true, shopError:null});
+    try{
+      const { data, error } = await sb().from('products').select('*').order('sort_order').order('created_at');
+      if (error) throw error;
+      if (this._unmounted) return;
+      this.setState({shopProducts:data||[], shopLoading:false});
+    }catch(e){
+      if (this._unmounted) return;
+      this.setState({shopLoading:false, shopError:'Could not load products right now — please refresh.'});
+    }
+  }
+
+  qtyDec(){ this.setState(s=>({checkoutQty: Math.max(1, s.checkoutQty-1)})); }
+  qtyInc(){ this.setState(s=>({checkoutQty: s.checkoutQty+1})); }
+  openCheckout(){ this.setState({checkoutOpen:true, checkoutError:null}); }
+  onCheckoutField(field, value){ this.setState(s=>({checkoutForm:{...s.checkoutForm, [field]:value}})); }
+
+  async submitOrder(product){
+    const { checkoutForm, checkoutQty } = this.state;
+    if (!checkoutForm.name.trim() || !checkoutForm.phone.trim() || !checkoutForm.address.trim()){
+      this.setState({checkoutError:'Please fill in your name, phone, and address.'});
+      return;
+    }
+    this.setState({checkoutSubmitting:true, checkoutError:null});
+    try{
+      const unitPrice = product.sale_price!=null ? product.sale_price : product.regular_price;
+      const { error } = await sb().from('orders').insert({
+        product_id: product.id,
+        product_title: product.title,
+        product_price: unitPrice,
+        quantity: checkoutQty,
+        full_name: checkoutForm.name.trim(),
+        phone: checkoutForm.phone.trim(),
+        address: checkoutForm.address.trim(),
+      });
+      if (error) throw error;
+      if (this._unmounted) return;
+      this.setState({
+        checkoutSubmitting:false, checkoutOpen:false,
+        orderSuccess:{ title: product.title, qty: checkoutQty },
+        checkoutForm:{name:'',phone:'',address:''}, checkoutQty:1,
+      });
+    }catch(e){
+      if (this._unmounted) return;
+      this.setState({checkoutSubmitting:false, checkoutError:'Something went wrong placing your order — please try again.'});
+    }
+  }
+
+  onActivateField(field, value){ this.setState(s=>({activateForm:{...s.activateForm, [field]:value}})); }
+  closeActivatePopup(){ this.setState({activatePopup:null}); }
+
+  async submitActivation(){
+    const { name, phone, email } = this.state.activateForm;
+    if (!name.trim() || !phone.trim() || !email.trim()){
+      this.setState({activateError:'Please fill in your name, phone, and email.'});
+      return;
+    }
+    this.setState({activateSubmitting:true, activateError:null});
+    try{
+      const { error } = await sb().from('activations').insert({ name:name.trim(), phone:phone.trim(), email:email.trim() });
+      if (error) throw error;
+      const { data: settings, error: settingsError } = await sb().from('settings').select('*').eq('id', 1).single();
+      if (settingsError) throw settingsError;
+      if (this._unmounted) return;
+      this.setState({
+        activateSubmitting:false,
+        activatePopup:{ name:name.trim(), discountText:settings.discount_text, pdfUrl:settings.pdf_url, playstoreUrl:settings.playstore_url },
+        activateForm:{name:'',phone:'',email:''},
+      });
+    }catch(e){
+      if (this._unmounted) return;
+      this.setState({activateSubmitting:false, activateError:'Something went wrong — please try again.'});
+    }
+  }
+
+  onContactField(field, value){ this.setState(s=>({contactForm:{...s.contactForm, [field]:value}})); }
+
+  async submitMessage(){
+    const { firstName, lastName, email, subject, message } = this.state.contactForm;
+    if (!firstName.trim() || !email.trim() || !message.trim()){
+      this.setState({contactError:'Please fill in your first name, email, and message.'});
+      return;
+    }
+    this.setState({contactSubmitting:true, contactError:null});
+    try{
+      const { error } = await sb().from('messages').insert({
+        first_name: firstName.trim(), last_name: lastName.trim() || null,
+        email: email.trim(), subject: subject || null, message: message.trim(),
+      });
+      if (error) throw error;
+      if (this._unmounted) return;
+      this.setState({
+        contactSubmitting:false, contactSuccess:true,
+        contactForm:{firstName:'',lastName:'',email:'',subject:'',message:''},
+      });
+    }catch(e){
+      if (this._unmounted) return;
+      this.setState({contactSubmitting:false, contactError:'Something went wrong — please try again.'});
+    }
+  }
+  _scrollTo(id){ const el=document.getElementById(id); if(!el) return; const y=el.getBoundingClientRect().top+window.scrollY-112; window.scrollTo({top:y, behavior:'smooth'}); }
+
+  renderVals(){
+    const page = this.state.page;
+    const gold='#C1A078', off='#F5F5F3', mut='#A1A1A6';
+    const mk=(label,target)=>({label, onClick:()=>this.go(target),
+      color: page===target? off : mut,
+      underline: page===target? gold : 'transparent'});
+    const navLinks=[ mk('Home','home'), mk('About','about'), mk('Features','features'), mk('Shop','shop'), mk('Contact','contact') ];
+
+    const highlights=[
+      {label:'Time-blocked days', text:'Hourly pages that turn a to-do list into a plan you actually follow.', slot:'hl-1'},
+      {label:'Weekly planning system', text:'Set the week, then execute each day against it with clarity.', slot:'hl-2'},
+      {label:'Built-in habit tracker', text:'Quiet daily and weekly grids that build momentum you can see.', slot:'hl-3'},
+      {label:'Digital activation', text:'Scan to activate your year and unlock free rewards from Elever.', slot:'hl-4'},
+    ];
+
+    const ic=(p)=>`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+    const benefits=[
+      {title:'Focus on the one thing', text:'Every day opens with your single most important priority — decided before the noise.', icon:'◉'},
+      {title:'Plan the week, execute the day', text:'A weekly spread sets direction; time-blocked days turn it into motion.', icon:'≡'},
+      {title:'Track habits and momentum', text:'Simple trackers make consistency visible, so progress compounds quietly.', icon:'↗'},
+      {title:'Reflect and improve', text:'A daily win and lesson close the loop, so each day teaches the next.', icon:'↻'},
+    ];
+
+    const audience=[
+      {text:'For freelancers, ',color:off},{text:'corporate professionals, ',color:mut},
+      {text:'job holders, ',color:off},{text:'higher students, ',color:mut},
+      {text:'teachers, ',color:off},{text:'and anyone serious about a more productive year.',color:mut},
+    ];
+
+    const teaserReviews=[
+      {stars:'★★★★★', quote:'The one-priority box changed how I start every morning. Calm, premium, and it actually works.', name:'Marcus Reyes', role:'Freelance designer', slot:'trev-1'},
+      {stars:'★★★★★', quote:'It feels like an object you respect. The weekly spread finally made my planning stick.', name:'Aisha Kimani', role:'Corporate strategist', slot:'trev-2'},
+      {stars:'★★★★★', quote:'Activating my year and getting the app free was a lovely surprise. This is a real system.', name:'Daniel Hoffmann', role:'University lecturer', slot:'trev-3'},
+    ];
+
+    const steps=[
+      {n:'01', label:'Get your Elever G1', text:'Order the planner and start on any day — it arrives undated and ready.', slot:'ps-1'},
+      {n:'02', label:'Scan the QR code', text:'Inside the planner, scan the QR code to activate your date in seconds.', slot:'ps-2'},
+      {n:'03', label:'Register your 365 days', text:'You are taken to the Elever system to register your year and rewards.', slot:'ps-3'},
+      {n:'04', label:'Finish strong', text:'We track your year and remind you near the end, so you begin the next one with a fresh planner.', slot:'ps-4'},
+    ];
+
+    const research=[
+      {stat:'42%', title:'Written goals work', text:'Participants who wrote down their goals were about 42% more likely to achieve them.', source:'Dr. Gail Matthews, Dominican University', disclaimer:'Supports why we design for writing things down — not a claim about this specific product.'},
+      {stat:'8,000+', title:'Plans beat intentions', text:'Across a meta-analysis of more than 8,000 participants, planning when, where, and how meaningfully increased follow-through.', source:'Gollwitzer & Sheeran, 2006 meta-analysis', disclaimer:'Cited to explain our focus on time-blocking, not as a guarantee of results.'},
+      {stat:'23 min', title:'Interruptions cost focus', text:'It takes roughly 23 minutes to fully refocus after an interruption.', source:'Dr. Gloria Mark, UC Irvine', disclaimer:'Why we design for single-tasking — this describes attention generally, not our product.'},
+      {stat:'66 days', title:'Habits take time', text:'On average, it takes about 66 days for a new behavior to become automatic.', source:'Lally et al., University College London', disclaimer:'The basis for a system built around months, not motivation spikes.'},
+    ];
+
+    const ecosystem=[
+      {title:'Scan to activate', text:'Every Elever product includes a QR code. Scan it once to register and unlock your rewards.', icon:'▣'},
+      {title:'A companion app', text:'Registered owners get the Elever To-Do App free, for life — the same calm system on your phone.', icon:'◲'},
+      {title:'A free productivity guide', text:'A short, evidence-based PDF on focus and habit-building, included at no cost.', icon:'▤'},
+      {title:'Loyalty rewards', text:'Activation unlocks a discount toward your next Elever product, automatically.', icon:'◈'},
+    ];
+
+    const values=[
+      {title:'Focus', text:'One priority, protected. We design to remove noise, not add features.', icon:'◉'},
+      {title:'Simplicity', text:'Restraint is the point. Everything unnecessary is left out on purpose.', icon:'–'},
+      {title:'Premium quality', text:'Materials and craft you respect — an object made to be kept and used daily.', icon:'✦'},
+      {title:'Continuous improvement', text:'Reflect, learn, refine. The same loop we build into every planner.', icon:'↻'},
+    ];
+
+    const ratingBreakdown=[
+      {star:5, pct:'92%'},{star:4, pct:'6%'},{star:3, pct:'1%'},{star:2, pct:'1%'},{star:1, pct:'0%'},
+    ];
+
+    const reviewsRaw=[
+      {stars:'★★★★★', quote:'The one-priority box changed how I start every morning. Calm, premium, and it actually works.', name:'Marcus Reyes', role:'Freelance designer', date:'Jul 2026', slot:'rv-1', ts:20260710},
+      {stars:'★★★★★', quote:'It feels like an object you respect. The weekly spread finally made my planning stick.', name:'Aisha Kimani', role:'Corporate strategist', date:'Jul 2026', slot:'rv-2', ts:20260705},
+      {stars:'★★★★★', quote:'Activating my year and getting the app free was a lovely surprise. This is a real system, not a gimmick.', name:'Daniel Hoffmann', role:'University lecturer', date:'Jun 2026', slot:'rv-3', ts:20260628},
+      {stars:'★★★★☆', quote:'Beautiful paper and a genuinely useful layout. I only wish it came in a larger size too.', name:'Priya Nair', role:'Product manager', date:'Jun 2026', slot:'rv-4', ts:20260620},
+      {stars:'★★★★★', quote:'As a teacher, the reflection prompts help me close each day well. Understated and premium.', name:'Thomas Bergström', role:'High school teacher', date:'Jun 2026', slot:'rv-5', ts:20260612},
+      {stars:'★★★★★', quote:'The habit tracker is quietly addictive. Three weeks in and my mornings are transformed.', name:'Sofia Alvarez', role:'Freelance writer', date:'May 2026', slot:'rv-6', ts:20260530},
+      {stars:'★★★★★', quote:'Undated format is perfect for my inconsistent schedule. No wasted pages, no guilt.', name:'James Okoro', role:'Corporate professional', date:'May 2026', slot:'rv-7', ts:20260518},
+      {stars:'★★★★★', quote:'The free productivity PDF alone is worth it. Practical, short, and clearly research-backed.', name:'Mei-Ling Chen', role:'Graduate student', date:'May 2026', slot:'rv-8', ts:20260509},
+      {stars:'★★★★☆', quote:'Elegant and focused. The app is a nice bonus — good to know it stays free for owners.', name:'Rahul Desai', role:'Startup founder', date:'Apr 2026', slot:'rv-9', ts:20260424},
+    ];
+    const highest = [...reviewsRaw].sort((a,b)=> b.stars.split('★').length - a.stars.split('★').length);
+    const recent = [...reviewsRaw].sort((a,b)=> b.ts - a.ts);
+    const allReviews = this.state.reviewSort==='highest' ? highest : recent;
+    const sopt=(id,label)=>({label, onClick:()=>this.setState({reviewSort:id}),
+      bg: this.state.reviewSort===id ? '#F5F5F3':'transparent',
+      color: this.state.reviewSort===id ? '#0B0B0C':'#A1A1A6',
+      border: this.state.reviewSort===id ? '#F5F5F3':'rgba(255,255,255,.14)'});
+    const sortOptions=[ sopt('recent','Most recent'), sopt('highest','Highest rated') ];
+
+    const contactMethods=[
+      {label:'Email', value:'hello@elevernotes.com', icon:'✉'},
+      {label:'Support hours', value:'Mon–Fri · 9am – 6pm', icon:'◷'},
+      {label:'Response time', value:'Within one business day', icon:'↩'},
+    ];
+    const contactLinks=[
+      {title:'Activate your planner', text:'Register your G1 and unlock your rewards.', onClick:()=>this.go('activate')},
+      {title:'Shop Elever G1', text:'Browse the planner and place an order.', onClick:()=>this.go('shop')},
+    ];
+
+    const money=(n)=>'$'+Number(n).toFixed(2);
+    const priceFields=(p)=>({
+      hasSale: p.sale_price!=null,
+      displayPrice: money(p.sale_price!=null ? p.sale_price : p.regular_price),
+      compareAtLabel: money(p.regular_price),
+    });
+    const activeSlug = page==='shop' && this.state.params ? this.state.params.slug : null;
+    const activeProductRaw = activeSlug ? this.state.shopProducts.find(p=>p.slug===activeSlug) : null;
+    const shopCards = this.state.shopProducts.filter(p=>p.is_active).map(p=>({
+      id:p.id, slug:p.slug, title:p.title, shortDescription:p.short_description,
+      imageUrl:p.image_url||'', hasImage:!!p.image_url,
+      ...priceFields(p),
+      onView:()=>this.go('shop',{slug:p.slug}),
+    }));
+    const activeProduct = activeProductRaw ? {
+      title:activeProductRaw.title, shortDescription:activeProductRaw.short_description,
+      imageUrl:activeProductRaw.image_url||'', hasImage:!!activeProductRaw.image_url,
+      ...priceFields(activeProductRaw),
+    } : null;
+    const featuredProductRaw = this.state.shopProducts.find(p=>p.is_active) || null;
+    const featuredProduct = featuredProductRaw ? {
+      title: featuredProductRaw.title, slug: featuredProductRaw.slug,
+      ...priceFields(featuredProductRaw),
+    } : { title:'Elever G1', slug:'', hasSale:false, displayPrice:'—', compareAtLabel:'' };
+    const buyFeatured = ()=> featuredProductRaw ? this.go('shop',{slug:featuredProductRaw.slug}) : this.go('shop');
+
+    const shopListing = !activeSlug;
+    const checkoutClosed = !this.state.checkoutOpen;
+    const noOrderSuccess = !this.state.orderSuccess;
+
+    const pageMeta = {
+      home: { title:'Elever Notes — Do the work that matters, every day', desc:'A premium daily planner and connected system built to turn intention into focused execution, one deliberate day at a time.' },
+      about: { title:'About — Elever Notes', desc:'Elever Notes builds calm, considered tools for people serious about how they spend their time. Read our story and values.' },
+      features: { title:'Features — Elever Notes', desc:'A calm system built on focus, planning, habit tracking, and reflection — backed by research, connected by one QR-code activation.' },
+      shop: activeProduct
+        ? { title:activeProduct.title+' — Elever Notes', desc: activeProduct.shortDescription || 'Shop the '+activeProduct.title+' from Elever Notes.' }
+        : { title:'Shop — Elever Notes', desc:'Browse the Elever Notes product catalog — premium planners built for focused, deliberate work.' },
+      activate: { title:'Activate your planner — Elever Notes', desc:'Scan the QR code in your Elever planner to register, unlock your rewards, and get a discount on your next purchase.' },
+      contact: { title:'Contact — Elever Notes', desc:"Get in touch with the Elever Notes team about orders, activation, or the ecosystem — we reply within one business day." },
+    };
+    const activeMeta = pageMeta[page] || pageMeta.home;
+    const pageTitle = activeMeta.title;
+    const pageDescription = activeMeta.desc;
+
+    const rawActivatePopup = this.state.activatePopup;
+    const activatePopup = rawActivatePopup ? {
+      name: rawActivatePopup.name,
+      discountText: rawActivatePopup.discountText || '15%',
+      pdfUrl: rawActivatePopup.pdfUrl || '',
+      hasPdf: !!rawActivatePopup.pdfUrl,
+      playstoreUrl: rawActivatePopup.playstoreUrl || '',
+      hasApp: !!rawActivatePopup.playstoreUrl,
+    } : null;
+
+    const foot=(label,fn)=>({label,onClick:fn});
+    const footerCols=[
+      {title:'Shop', links:[foot('All products',()=>this.go('shop')), foot('Features',()=>this.go('features'))]},
+      {title:'Company', links:[foot('About us',()=>this.go('about')), foot('Reviews',()=>this.goReviews()), foot('Contact',()=>this.go('contact'))]},
+      {title:'Support', links:[foot('Activate your planner',()=>this.go('activate')), foot('Contact',()=>this.go('contact'))]},
+    ];
+
+    return {
+      isHome:page==='home', isAbout:page==='about',
+      isContact:page==='contact', isActivate:page==='activate',
+      isShop:page==='shop', isFeatures:page==='features', research, ecosystem,
+      pageTitle, pageDescription,
+      goHome:()=>this.go('home'), goProduct:()=>this.go('shop'), goAbout:()=>this.go('about'),
+      goReviews:()=>{ this.go('shop'); setTimeout(()=>this._scrollTo('shop-reviews'), 80); },
+      goContact:()=>this.go('contact'), goActivate:()=>this.go('activate'),
+      goShop:()=>this.go('shop'), goFeatures:()=>this.go('features'),
+      buy:()=>this.go('shop'), featuredProduct, buyFeatured,
+
+      shopCards, shopLoading:this.state.shopLoading, shopError:this.state.shopError,
+      shopHasSlug: !!activeSlug, shopListing, shopNotFound: !!activeSlug && !activeProductRaw && !this.state.shopLoading,
+      activeProduct, activeProductRaw,
+      checkoutOpen:this.state.checkoutOpen, checkoutClosed, noOrderSuccess, checkoutQty:this.state.checkoutQty,
+      checkoutName:this.state.checkoutForm.name, checkoutPhone:this.state.checkoutForm.phone, checkoutAddress:this.state.checkoutForm.address,
+      checkoutSubmitting:this.state.checkoutSubmitting, checkoutError:this.state.checkoutError, orderSuccess:this.state.orderSuccess,
+      qtyDec:()=>this.qtyDec(), qtyInc:()=>this.qtyInc(), openCheckout:()=>this.openCheckout(),
+      onCheckoutNameChange:(e)=>this.onCheckoutField('name', e.target.value),
+      onCheckoutPhoneChange:(e)=>this.onCheckoutField('phone', e.target.value),
+      onCheckoutAddressChange:(e)=>this.onCheckoutField('address', e.target.value),
+      submitOrderNow:()=>activeProductRaw && this.submitOrder(activeProductRaw),
+      buyAgain:()=>this.setState({orderSuccess:null}),
+
+      activateName:this.state.activateForm.name, activatePhone:this.state.activateForm.phone, activateEmail:this.state.activateForm.email,
+      activateSubmitting:this.state.activateSubmitting, activateError:this.state.activateError, activatePopup,
+      onActivateNameChange:(e)=>this.onActivateField('name', e.target.value),
+      onActivatePhoneChange:(e)=>this.onActivateField('phone', e.target.value),
+      onActivateEmailChange:(e)=>this.onActivateField('email', e.target.value),
+      submitActivationNow:()=>this.submitActivation(),
+      closeActivatePopupNow:()=>this.closeActivatePopup(),
+
+      contactFirstName:this.state.contactForm.firstName, contactLastName:this.state.contactForm.lastName,
+      contactEmail:this.state.contactForm.email, contactSubject:this.state.contactForm.subject, contactMessage:this.state.contactForm.message,
+      contactSubmitting:this.state.contactSubmitting, contactError:this.state.contactError, contactSuccess:this.state.contactSuccess,
+      contactNotSuccess: !this.state.contactSuccess,
+      onContactFirstNameChange:(e)=>this.onContactField('firstName', e.target.value),
+      onContactLastNameChange:(e)=>this.onContactField('lastName', e.target.value),
+      onContactEmailChange:(e)=>this.onContactField('email', e.target.value),
+      onContactSubjectChange:(e)=>this.onContactField('subject', e.target.value),
+      onContactMessageChange:(e)=>this.onContactField('message', e.target.value),
+      submitMessageNow:()=>this.submitMessage(),
+      navLinks, highlights, benefits, audience, teaserReviews, footerCols, steps,
+      values, ratingBreakdown, allReviews, reviewCount:allReviews.length, sortOptions,
+      contactMethods, contactLinks,
+    };
+  }
+}
+</script>
+</body>
+</html>

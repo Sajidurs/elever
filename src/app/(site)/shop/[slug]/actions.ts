@@ -1,12 +1,10 @@
 'use server';
 
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { orderSchema } from '@/lib/validation/schemas';
 
-export type OrderState =
-  | { status: 'idle' }
-  | { status: 'error'; message: string }
-  | { status: 'success'; quantity: number; productTitle: string; orderNumber: string };
+export type OrderState = { status: 'idle' } | { status: 'error'; message: string };
 
 export async function placeOrder(_prev: OrderState, formData: FormData): Promise<OrderState> {
   const parsed = orderSchema.safeParse({
@@ -38,25 +36,25 @@ export async function placeOrder(_prev: OrderState, formData: FormData): Promise
 
   const unitPrice = product.sale_price ?? product.regular_price;
 
-  const { data: inserted, error } = await supabase
-    .from('orders')
-    .insert({
-      product_id: productId,
-      product_title: product.title,
-      product_price: unitPrice,
-      quantity,
-      full_name: fullName,
-      phone,
-      address,
-    })
-    .select('id')
-    .single();
+  // Generate the id ourselves rather than reading it back after insert —
+  // anon has no SELECT policy on orders (by design, so the table can't be
+  // dumped via the public API), so `.insert().select()` would fail RLS.
+  const orderId = crypto.randomUUID();
 
-  if (error || !inserted) {
+  const { error } = await supabase.from('orders').insert({
+    id: orderId,
+    product_id: productId,
+    product_title: product.title,
+    product_price: unitPrice,
+    quantity,
+    full_name: fullName,
+    phone,
+    address,
+  });
+
+  if (error) {
     return { status: 'error', message: 'Something went wrong placing your order — please try again.' };
   }
 
-  const orderNumber = inserted.id.slice(-8).toUpperCase();
-
-  return { status: 'success', quantity, productTitle: product.title, orderNumber };
+  redirect(`/order-confirmation/${orderId}`);
 }

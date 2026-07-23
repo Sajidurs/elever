@@ -1,7 +1,6 @@
 'use client';
 
 import { useActionState, useState } from 'react';
-import Link from 'next/link';
 import { placeOrder, type OrderState } from './actions';
 import type { Product } from '@/lib/types/database';
 
@@ -14,28 +13,6 @@ export function OrderForm({ product }: { product: Product }) {
   const [state, formAction, isPending] = useActionState(placeOrder, initialState);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
-
-  if (state.status === 'success') {
-    return (
-      <div className="rounded-xl border border-brand-accent/35 bg-brand-accent/8 p-5.5">
-        <p className="mb-1.5 font-medium">Order placed.</p>
-        <p className="mb-4 text-[13.5px] leading-relaxed text-[#c9c9cc]">
-          We&apos;ll contact you to confirm your Cash on Delivery order for {state.quantity} × {state.productTitle}.
-        </p>
-        <div className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
-          <p className="text-[11px] tracking-wide text-brand-muted uppercase">Order number</p>
-          <p className="font-mono text-lg tracking-wider text-brand-accent">{state.orderNumber}</p>
-        </div>
-        <p className="mt-3.5 text-xs text-brand-subtle">
-          Save this number — you&apos;ll need it with your phone number to{' '}
-          <Link href="/track-order" className="text-brand-accent underline underline-offset-2">
-            track your order
-          </Link>
-          .
-        </p>
-      </div>
-    );
-  }
 
   if (!checkoutOpen) {
     return (

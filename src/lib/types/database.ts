@@ -35,6 +35,18 @@ export interface TrackedOrder {
   created_at: string;
 }
 
+export interface OrderConfirmation {
+  id: string;
+  product_title: string;
+  product_price: number;
+  quantity: number;
+  full_name: string;
+  phone: string;
+  address: string;
+  status: OrderStatus;
+  created_at: string;
+}
+
 export interface Activation {
   id: string;
   name: string;

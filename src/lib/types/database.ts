@@ -27,6 +27,14 @@ export interface Order {
   created_at: string;
 }
 
+export interface TrackedOrder {
+  order_number: string;
+  product_title: string;
+  quantity: number;
+  status: OrderStatus;
+  created_at: string;
+}
+
 export interface Activation {
   id: string;
   name: string;

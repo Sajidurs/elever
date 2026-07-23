@@ -25,9 +25,6 @@ export default function ActivatePage() {
 
       <section className="mx-auto max-w-md px-5 pb-14 sm:px-8">
         <div className="rounded-[20px] border border-white/8 bg-brand-surface p-7 sm:p-9">
-          <p className="mb-6 text-sm leading-relaxed text-brand-muted">
-            Scan the QR code inside the front cover of your planner, then fill in your details below to activate.
-          </p>
           <ActivateForm />
           <p className="mt-4.5 text-center text-xs text-brand-subtle">
             Registering activates your 365 days and all included rewards.

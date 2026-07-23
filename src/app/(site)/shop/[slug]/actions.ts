@@ -6,7 +6,7 @@ import { orderSchema } from '@/lib/validation/schemas';
 export type OrderState =
   | { status: 'idle' }
   | { status: 'error'; message: string }
-  | { status: 'success'; quantity: number; productTitle: string };
+  | { status: 'success'; quantity: number; productTitle: string; orderNumber: string };
 
 export async function placeOrder(_prev: OrderState, formData: FormData): Promise<OrderState> {
   const parsed = orderSchema.safeParse({
@@ -38,19 +38,25 @@ export async function placeOrder(_prev: OrderState, formData: FormData): Promise
 
   const unitPrice = product.sale_price ?? product.regular_price;
 
-  const { error } = await supabase.from('orders').insert({
-    product_id: productId,
-    product_title: product.title,
-    product_price: unitPrice,
-    quantity,
-    full_name: fullName,
-    phone,
-    address,
-  });
+  const { data: inserted, error } = await supabase
+    .from('orders')
+    .insert({
+      product_id: productId,
+      product_title: product.title,
+      product_price: unitPrice,
+      quantity,
+      full_name: fullName,
+      phone,
+      address,
+    })
+    .select('id')
+    .single();
 
-  if (error) {
+  if (error || !inserted) {
     return { status: 'error', message: 'Something went wrong placing your order — please try again.' };
   }
 
-  return { status: 'success', quantity, productTitle: product.title };
+  const orderNumber = inserted.id.slice(-8).toUpperCase();
+
+  return { status: 'success', quantity, productTitle: product.title, orderNumber };
 }

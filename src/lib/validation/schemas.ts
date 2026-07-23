@@ -41,6 +41,11 @@ export const settingsSchema = z.object({
   playstoreUrl: z.string().trim().optional(),
 });
 
+export const trackOrderSchema = z.object({
+  phone: z.string().trim().min(7, 'Please enter a valid phone number.'),
+  orderNumber: z.string().trim().min(4, 'Please enter your order number.'),
+});
+
 export const loginSchema = z.object({
   email: z.string().trim().email('Please enter a valid email.'),
   password: z.string().min(1, 'Please enter your password.'),

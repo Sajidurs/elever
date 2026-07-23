@@ -31,6 +31,24 @@ export async function submitActivation(
   const { name, phone, email } = parsed.data;
   const supabase = await createClient();
 
+  // Only allow activation if this phone number matches a real order —
+  // prevents anyone from activating with an arbitrary phone number.
+  const { data: hasOrder, error: lookupError } = await supabase.rpc('phone_has_order', {
+    p_phone: phone,
+  });
+
+  if (lookupError) {
+    return { status: 'error', message: 'Something went wrong — please try again.' };
+  }
+
+  if (!hasOrder) {
+    return {
+      status: 'error',
+      message:
+        "This phone number isn't registered to any order. Please use the phone number you provided when ordering your planner.",
+    };
+  }
+
   const { error } = await supabase.from('activations').insert({ name, phone, email });
   if (error) {
     return { status: 'error', message: 'Something went wrong — please try again.' };

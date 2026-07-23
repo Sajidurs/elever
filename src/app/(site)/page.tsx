@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { LinkButton } from '@/components/ui/Button';
+import { Hero } from '@/components/home/Hero';
 import { getActiveProducts } from '@/lib/data/products';
 import { benefits, teaserReviews } from '@/lib/content';
 import { formatPrice } from '@/lib/utils';
@@ -14,24 +15,10 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="mx-auto max-w-3xl px-5 pt-24 pb-16 text-center sm:px-8 sm:pt-32">
-        <p className="mb-5 text-xs tracking-[0.22em] text-brand-accent uppercase">Elever Notes</p>
-        <h1 className="text-[clamp(2.5rem,7vw,4.5rem)] leading-[1.05] font-extralight tracking-tight">
-          Do the work that matters, every single day.
-        </h1>
-        <p className="mx-auto mt-6 max-w-xl text-lg text-brand-muted">
-          A premium daily planner and a connected system, built to turn intention into focused execution — one
-          deliberate day at a time.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3.5">
-          <LinkButton href={featured ? `/shop/${featured.slug}` : '/shop'} variant="primary">
-            Buy {featured?.title ?? 'Elever G1'}
-          </LinkButton>
-          <LinkButton href="/features" variant="secondary">
-            Learn more
-          </LinkButton>
-        </div>
-      </section>
+      <Hero
+        featuredTitle={featured?.title ?? 'Elever G1'}
+        featuredHref={featured ? `/shop/${featured.slug}` : '/shop'}
+      />
 
       {featured && (
         <section className="border-t border-white/8">

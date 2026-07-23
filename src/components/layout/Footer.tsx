@@ -20,6 +20,7 @@ const FOOTER_COLUMNS = [
     title: 'Support',
     links: [
       { href: '/activate', label: 'Activate your planner' },
+      { href: '/track-order', label: 'Track your order' },
       { href: '/contact', label: 'Contact' },
     ],
   },

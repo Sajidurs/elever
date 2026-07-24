@@ -2,12 +2,12 @@
 
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
-import type { Product } from '@/lib/types/database';
+import type { Product, ProductImage } from '@/lib/types/database';
 import { formatPrice } from '@/lib/utils';
 import { deleteProduct } from './actions';
 import { ProductForm } from './ProductForm';
 
-export function ProductTable({ products }: { products: Product[] }) {
+export function ProductTable({ products, images }: { products: Product[]; images: ProductImage[] }) {
   const [editing, setEditing] = useState<Product | 'new' | null>(null);
   const [, startTransition] = useTransition();
 
@@ -88,7 +88,13 @@ export function ProductTable({ products }: { products: Product[] }) {
         </table>
       </div>
 
-      {editing && <ProductForm product={editing === 'new' ? null : editing} onClose={() => setEditing(null)} />}
+      {editing && (
+        <ProductForm
+          product={editing === 'new' ? null : editing}
+          images={editing === 'new' ? [] : images.filter((img) => img.product_id === editing.id)}
+          onClose={() => setEditing(null)}
+        />
+      )}
     </div>
   );
 }

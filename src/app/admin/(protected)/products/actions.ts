@@ -3,8 +3,14 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { productSchema } from '@/lib/validation/schemas';
+import type { ProductImage } from '@/lib/types/database';
 
 export type ProductFormState = { status: 'idle' } | { status: 'error'; message: string } | { status: 'success' };
+
+export type GalleryState =
+  | { status: 'idle' }
+  | { status: 'error'; message: string }
+  | { status: 'success'; images: ProductImage[] };
 
 async function getAuthedClient() {
   const supabase = await createClient();
@@ -79,4 +85,76 @@ export async function deleteProduct(id: string) {
   revalidatePath('/admin/products');
   revalidatePath('/shop');
   revalidatePath('/');
+}
+
+export async function addProductImages(
+  _prev: GalleryState,
+  formData: FormData,
+): Promise<GalleryState> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return { status: 'error', message: 'Not authorized.' };
+
+  const productId = formData.get('productId');
+  if (typeof productId !== 'string' || !productId) {
+    return { status: 'error', message: 'Save the product before adding gallery images.' };
+  }
+
+  const files = formData.getAll('images').filter((f): f is File => f instanceof File && f.size > 0);
+  if (files.length === 0) {
+    return { status: 'error', message: 'Please choose at least one image.' };
+  }
+
+  const { data: existing } = await supabase
+    .from('product_images')
+    .select('sort_order')
+    .eq('product_id', productId)
+    .order('sort_order', { ascending: false })
+    .limit(1);
+
+  let nextOrder = (existing?.[0]?.sort_order ?? -1) + 1;
+  const inserted: ProductImage[] = [];
+
+  for (const file of files) {
+    const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '-')}`;
+    const { error: uploadError } = await supabase.storage.from('product-images').upload(path, file, {
+      upsert: true,
+    });
+    if (uploadError) continue;
+
+    const imageUrl = supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+    const { data: row, error: insertError } = await supabase
+      .from('product_images')
+      .insert({ product_id: productId, image_url: imageUrl, sort_order: nextOrder })
+      .select()
+      .single();
+
+    if (!insertError && row) {
+      inserted.push(row as ProductImage);
+      nextOrder += 1;
+    }
+  }
+
+  if (inserted.length === 0) {
+    return { status: 'error', message: 'Could not upload the selected images — please try again.' };
+  }
+
+  revalidatePath('/admin/products');
+  revalidatePath('/shop');
+  return { status: 'success', images: inserted };
+}
+
+export async function deleteProductImage(imageId: string, imageUrl: string) {
+  const supabase = await getAuthedClient();
+  if (!supabase) return;
+
+  const marker = '/product-images/';
+  const markerIndex = imageUrl.indexOf(marker);
+  if (markerIndex !== -1) {
+    const path = imageUrl.slice(markerIndex + marker.length);
+    await supabase.storage.from('product-images').remove([path]);
+  }
+
+  await supabase.from('product_images').delete().eq('id', imageId);
+  revalidatePath('/admin/products');
+  revalidatePath('/shop');
 }

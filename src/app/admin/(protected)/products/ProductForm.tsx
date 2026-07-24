@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useState } from 'react';
 import { saveProduct, type ProductFormState } from './actions';
-import type { Product } from '@/lib/types/database';
+import { GalleryManager } from './GalleryManager';
+import type { Product, ProductImage } from '@/lib/types/database';
 
 const initialState: ProductFormState = { status: 'idle' };
 
@@ -17,7 +18,15 @@ function slugify(value: string) {
     .replace(/(^-|-$)/g, '');
 }
 
-export function ProductForm({ product, onClose }: { product: Product | null; onClose: () => void }) {
+export function ProductForm({
+  product,
+  images,
+  onClose,
+}: {
+  product: Product | null;
+  images: ProductImage[];
+  onClose: () => void;
+}) {
   const [state, formAction, isPending] = useActionState(saveProduct, initialState);
   const [title, setTitle] = useState(product?.title ?? '');
   const [slug, setSlug] = useState(product?.slug ?? '');
@@ -102,7 +111,7 @@ export function ProductForm({ product, onClose }: { product: Product | null; onC
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs text-brand-muted">Product image</label>
+            <label className="mb-1.5 block text-xs text-brand-muted">Cover image</label>
             <input name="image" type="file" accept="image/*" className="w-full text-sm" />
           </div>
 
@@ -135,6 +144,12 @@ export function ProductForm({ product, onClose }: { product: Product | null; onC
             </button>
           </div>
         </form>
+
+        {product && (
+          <div className="mt-5 border-t border-white/8 pt-5">
+            <GalleryManager productId={product.id} images={images} />
+          </div>
+        )}
       </div>
     </div>
   );

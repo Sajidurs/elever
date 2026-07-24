@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { logout } from '@/app/admin/(protected)/actions';
 
 const NAV_ITEMS = [
+  { href: '/admin', label: 'Dashboard', exact: true },
   { href: '/admin/products', label: 'Products' },
   { href: '/admin/orders', label: 'Orders' },
   { href: '/admin/activations', label: 'Activations' },
@@ -20,7 +21,7 @@ export function AdminNav() {
     <nav className="flex w-52 flex-shrink-0 flex-col border-r border-white/8 p-5">
       <p className="mb-6 px-2.5 text-[15px] font-semibold tracking-[0.06em]">ELEVER ADMIN</p>
       {NAV_ITEMS.map((item) => {
-        const active = pathname.startsWith(item.href);
+        const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
         return (
           <Link
             key={item.href}

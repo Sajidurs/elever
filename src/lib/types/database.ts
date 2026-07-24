@@ -55,6 +55,22 @@ export interface Activation {
   created_at: string;
 }
 
+export interface ActivationAttempt {
+  id: string;
+  phone: string;
+  name: string | null;
+  email: string | null;
+  created_at: string;
+}
+
+export interface ProductImage {
+  id: string;
+  product_id: string;
+  image_url: string;
+  sort_order: number;
+  created_at: string;
+}
+
 export interface Message {
   id: string;
   first_name: string;

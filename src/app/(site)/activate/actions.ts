@@ -42,6 +42,10 @@ export async function submitActivation(
   }
 
   if (!hasOrder) {
+    // Log the failed attempt so admin can see how many people tried with an
+    // unregistered number — best-effort, don't block the error response on it.
+    await supabase.from('activation_attempts').insert({ name, phone, email });
+
     return {
       status: 'error',
       message:

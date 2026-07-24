@@ -1,6 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
+import Link from 'next/link';
 import type { Order, OrderItem, OrderStatus } from '@/lib/types/database';
 import { formatPrice } from '@/lib/utils';
 import { updateOrderStatus, deleteOrder } from './actions';
@@ -89,7 +90,14 @@ export function OrdersTable({ orders, orderItems }: { orders: Order[]; orderItem
                       ))}
                     </select>
                   </td>
-                  <td className="p-3">
+                  <td className="p-3 whitespace-nowrap">
+                    <Link
+                      href={`/admin/print/orders/${o.id}`}
+                      target="_blank"
+                      className="mr-3 text-xs text-brand-accent"
+                    >
+                      Print
+                    </Link>
                     <button onClick={() => handleDelete(o.id)} className="cursor-pointer text-xs text-brand-error">
                       Delete
                     </button>

@@ -30,6 +30,24 @@ export async function getAllOrderItems(): Promise<OrderItem[]> {
   return data ?? [];
 }
 
+export async function getOrderById(id: string): Promise<Order | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from('orders').select('*').eq('id', id).maybeSingle();
+  if (error || !data) return null;
+  return data;
+}
+
+export async function getOrderItemsForOrder(orderId: string): Promise<OrderItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('order_items')
+    .select('*')
+    .eq('order_id', orderId)
+    .order('created_at', { ascending: true });
+  if (error) return [];
+  return data ?? [];
+}
+
 export async function updateOrderStatus(id: string, status: OrderStatus) {
   const supabase = await createClient();
   const { error } = await supabase.from('orders').update({ status }).eq('id', id);

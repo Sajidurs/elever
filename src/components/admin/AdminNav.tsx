@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: '/admin/orders', label: 'Orders' },
   { href: '/admin/activations', label: 'Activations' },
   { href: '/admin/messages', label: 'Messages' },
+  { href: '/admin/contacts', label: 'Contacts' },
   { href: '/admin/settings', label: 'Settings' },
 ];
 

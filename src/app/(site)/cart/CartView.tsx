@@ -7,6 +7,9 @@ import { useCart } from '@/lib/cart/CartContext';
 import { placeCartOrder, type CartOrderState } from './actions';
 import { DELIVERY_ZONES, DELIVERY_FEES, DELIVERY_LABELS, type DeliveryZone } from '@/lib/delivery';
 import { formatPrice } from '@/lib/utils';
+import { computeDiscount } from '@/lib/coupons';
+import { checkCoupon } from '@/lib/actions/coupon';
+import type { CouponType } from '@/lib/types/database';
 
 const initialState: CartOrderState = { status: 'idle' };
 
@@ -17,6 +20,35 @@ export function CartView() {
   const { items, subtotal, removeItem, updateQuantity } = useCart();
   const [zone, setZone] = useState<DeliveryZone>('dhaka');
   const [state, formAction, isPending] = useActionState(placeCartOrder, initialState);
+
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discountType: CouponType;
+    discountValue: number;
+  } | null>(null);
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
+
+  async function handleApplyCoupon() {
+    if (!couponInput.trim()) return;
+    setCheckingCoupon(true);
+    const result = await checkCoupon(couponInput);
+    setCheckingCoupon(false);
+    if (result.ok) {
+      setAppliedCoupon({ code: result.code, discountType: result.discountType, discountValue: result.discountValue });
+      setCouponMessage(null);
+    } else {
+      setAppliedCoupon(null);
+      setCouponMessage(result.message);
+    }
+  }
+
+  function handleRemoveCoupon() {
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setCouponMessage(null);
+  }
 
   if (items.length === 0) {
     return (
@@ -33,7 +65,10 @@ export function CartView() {
   }
 
   const deliveryFee = DELIVERY_FEES[zone];
-  const total = subtotal + deliveryFee;
+  const discount = appliedCoupon
+    ? computeDiscount(appliedCoupon.discountType, appliedCoupon.discountValue, subtotal)
+    : 0;
+  const total = subtotal + deliveryFee - discount;
 
   return (
     <div className="grid gap-8 sm:grid-cols-[1fr_360px]">
@@ -90,6 +125,7 @@ export function CartView() {
           value={JSON.stringify(items.map((i) => ({ productId: i.productId, quantity: i.quantity })))}
         />
         <input type="hidden" name="deliveryZone" value={zone} />
+        <input type="hidden" name="couponCode" value={appliedCoupon?.code ?? ''} />
 
         <div className="mb-4 flex flex-col gap-2">
           <span className="mb-0.5 text-[13px] text-brand-muted">Delivery location</span>
@@ -126,6 +162,37 @@ export function CartView() {
           />
         </div>
 
+        <div className="mb-4">
+          {appliedCoupon ? (
+            <div className="flex items-center justify-between rounded-lg border border-brand-accent/40 bg-brand-accent/10 px-3.5 py-2.5 text-sm">
+              <span>
+                Coupon <span className="font-medium text-brand-accent">{appliedCoupon.code}</span> applied
+              </span>
+              <button type="button" onClick={handleRemoveCoupon} className="cursor-pointer text-xs text-brand-error">
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                value={couponInput}
+                onChange={(e) => setCouponInput(e.target.value)}
+                placeholder="Coupon code"
+                className={`flex-1 ${inputClass}`}
+              />
+              <button
+                type="button"
+                onClick={handleApplyCoupon}
+                disabled={checkingCoupon || !couponInput.trim()}
+                className="cursor-pointer rounded-lg border border-white/18 px-4 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {checkingCoupon ? 'Checking…' : 'Apply'}
+              </button>
+            </div>
+          )}
+          {couponMessage && <p className="mt-2 text-sm text-brand-error">{couponMessage}</p>}
+        </div>
+
         <div className="mb-4 flex flex-col gap-2 border-t border-white/8 pt-4 text-sm">
           <div className="flex justify-between text-brand-muted">
             <span>Subtotal</span>
@@ -135,6 +202,12 @@ export function CartView() {
             <span>Delivery</span>
             <span>{formatPrice(deliveryFee)}</span>
           </div>
+          {discount > 0 && (
+            <div className="flex justify-between text-brand-accent">
+              <span>Discount ({appliedCoupon?.code})</span>
+              <span>-{formatPrice(discount)}</span>
+            </div>
+          )}
           <div className="flex justify-between font-medium">
             <span>Total</span>
             <span>{formatPrice(total)}</span>

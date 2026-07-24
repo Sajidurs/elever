@@ -82,6 +82,12 @@ export default async function OrderPrintPage(props: PageProps<'/admin/print/orde
           <span>Delivery{deliveryLabel ? ` (${deliveryLabel})` : ''}</span>
           <span>{formatPrice(order.delivery_fee)}</span>
         </div>
+        {order.discount_amount > 0 && (
+          <div className="flex justify-between">
+            <span>Discount{order.coupon_code ? ` (${order.coupon_code})` : ''}</span>
+            <span>-{formatPrice(order.discount_amount)}</span>
+          </div>
+        )}
         <div className="flex justify-between border-t border-black/25 pt-1.5 text-base font-semibold">
           <span>Total (Cash on Delivery)</span>
           <span>{formatPrice(total)}</span>

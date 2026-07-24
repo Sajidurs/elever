@@ -13,6 +13,7 @@ export const orderSchema = z.object({
   phone: z.string().trim().min(7, 'Please enter a valid phone number.'),
   address: z.string().trim().min(1, 'Please enter your delivery address.'),
   deliveryZone: z.enum(['dhaka', 'outside']),
+  couponCode: z.string().trim().optional(),
 });
 
 export const cartOrderSchema = z.object({
@@ -20,6 +21,7 @@ export const cartOrderSchema = z.object({
   phone: z.string().trim().min(7, 'Please enter a valid phone number.'),
   address: z.string().trim().min(1, 'Please enter your delivery address.'),
   deliveryZone: z.enum(['dhaka', 'outside']),
+  couponCode: z.string().trim().optional(),
 });
 
 export const contactSchema = z.object({
@@ -42,6 +44,22 @@ export const productSchema = z.object({
   salePrice: z.coerce.number().min(0).optional().nullable(),
   isActive: z.coerce.boolean(),
 });
+
+export const couponSchema = z
+  .object({
+    code: z
+      .string()
+      .trim()
+      .min(1, 'Coupon code is required.')
+      .regex(/^[A-Za-z0-9-]+$/, 'Code can only contain letters, numbers, and hyphens.'),
+    discountType: z.enum(['fixed', 'percent']),
+    discountValue: z.coerce.number().positive('Value must be greater than zero.'),
+    isActive: z.coerce.boolean(),
+  })
+  .refine((data) => data.discountType === 'fixed' || data.discountValue <= 100, {
+    message: 'Percentage discounts cannot exceed 100.',
+    path: ['discountValue'],
+  });
 
 export const settingsSchema = z.object({
   discountText: z.string().trim().min(1, 'Discount text is required.'),

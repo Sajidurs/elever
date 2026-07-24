@@ -28,6 +28,8 @@ export interface Order {
   delivery_zone: DeliveryZone | null;
   delivery_fee: number;
   subtotal: number | null;
+  coupon_code: string | null;
+  discount_amount: number;
   total: number | null;
   status: OrderStatus;
   created_at: string;
@@ -53,6 +55,8 @@ export interface TrackedOrder {
   order_number: string;
   status: OrderStatus;
   created_at: string;
+  coupon_code: string | null;
+  discount_amount: number;
   total: number;
   items: OrderLineItem[];
 }
@@ -65,6 +69,8 @@ export interface OrderConfirmation {
   delivery_zone: DeliveryZone | null;
   delivery_fee: number;
   subtotal: number | null;
+  coupon_code: string | null;
+  discount_amount: number;
   total: number;
   status: OrderStatus;
   created_at: string;
@@ -102,6 +108,17 @@ export interface Message {
   email: string;
   subject: string | null;
   message: string;
+  created_at: string;
+}
+
+export type CouponType = 'fixed' | 'percent';
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discount_type: CouponType;
+  discount_value: number;
+  is_active: boolean;
   created_at: string;
 }
 

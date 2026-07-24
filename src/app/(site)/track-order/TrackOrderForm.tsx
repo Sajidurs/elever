@@ -60,6 +60,12 @@ export function TrackOrderForm() {
               </p>
             ))}
           </div>
+          {state.order.discount_amount > 0 && (
+            <p className="mt-2 text-sm text-brand-accent">
+              Discount{state.order.coupon_code ? ` (${state.order.coupon_code})` : ''}: -
+              {formatPrice(state.order.discount_amount)}
+            </p>
+          )}
           <p className="mt-3 border-t border-white/8 pt-3 text-sm font-medium">{formatPrice(state.order.total)}</p>
           <p className="mt-1 text-xs text-brand-subtle">
             Placed{' '}

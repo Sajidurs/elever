@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { orderSchema } from '@/lib/validation/schemas';
 import { DELIVERY_FEES } from '@/lib/delivery';
+import { computeDiscount } from '@/lib/coupons';
 
 export type OrderState = { status: 'idle' } | { status: 'error'; message: string };
 
@@ -15,13 +16,14 @@ export async function placeOrder(_prev: OrderState, formData: FormData): Promise
     phone: formData.get('phone'),
     address: formData.get('address'),
     deliveryZone: formData.get('deliveryZone'),
+    couponCode: formData.get('couponCode') || undefined,
   });
 
   if (!parsed.success) {
     return { status: 'error', message: 'Please fill in your name, phone, address, and delivery location.' };
   }
 
-  const { productId, quantity, fullName, phone, address, deliveryZone } = parsed.data;
+  const { productId, quantity, fullName, phone, address, deliveryZone, couponCode } = parsed.data;
   const supabase = await createClient();
 
   // Re-derive title/price from the database rather than trusting client-supplied
@@ -39,7 +41,22 @@ export async function placeOrder(_prev: OrderState, formData: FormData): Promise
   const unitPrice = product.sale_price ?? product.regular_price;
   const subtotal = unitPrice * quantity;
   const deliveryFee = DELIVERY_FEES[deliveryZone];
-  const total = subtotal + deliveryFee;
+
+  // Re-validate the coupon server-side too — never trust a client-supplied
+  // discount amount for what actually gets billed.
+  let appliedCouponCode: string | null = null;
+  let discountAmount = 0;
+  if (couponCode) {
+    const { data: couponRows } = await supabase.rpc('validate_coupon', { p_code: couponCode });
+    if (!couponRows || couponRows.length === 0) {
+      return { status: 'error', message: 'Your coupon code is no longer valid — please remove it and try again.' };
+    }
+    const coupon = couponRows[0];
+    appliedCouponCode = coupon.code;
+    discountAmount = computeDiscount(coupon.discount_type, coupon.discount_value, subtotal);
+  }
+
+  const total = subtotal + deliveryFee - discountAmount;
 
   // Generate the id ourselves rather than reading it back after insert —
   // anon has no SELECT policy on orders (by design, so the table can't be
@@ -54,6 +71,8 @@ export async function placeOrder(_prev: OrderState, formData: FormData): Promise
     delivery_zone: deliveryZone,
     delivery_fee: deliveryFee,
     subtotal,
+    coupon_code: appliedCouponCode,
+    discount_amount: discountAmount,
     total,
   });
 

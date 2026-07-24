@@ -6,6 +6,13 @@ import { formatPrice } from '@/lib/utils';
 import { DELIVERY_LABELS } from '@/lib/delivery';
 import { CONTACT_RANGES, CONTACT_RANGE_LABELS, contactRangeStart, type ContactRange } from '@/lib/contacts';
 
+// jsPDF's built-in fonts only support the WinAnsi/Latin-1 character set, so the
+// ৳ glyph used by formatPrice() renders as corrupted characters in the PDF —
+// use a plain ASCII "Tk" prefix here instead, just for the PDF export.
+function pdfPrice(amount: number): string {
+  return `Tk ${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 export function ContactsView({ orders, messages }: { orders: Order[]; messages: Message[] }) {
   const [range, setRange] = useState<ContactRange>('all');
 
@@ -39,7 +46,7 @@ export function ContactsView({ orders, messages }: { orders: Order[]; messages: 
         o.phone,
         o.address,
         o.delivery_zone ? DELIVERY_LABELS[o.delivery_zone] : '—',
-        formatPrice(o.total ?? (o.product_price ?? 0) * (o.quantity ?? 0)),
+        pdfPrice(o.total ?? (o.product_price ?? 0) * (o.quantity ?? 0)),
         new Date(o.created_at).toLocaleDateString(),
       ]),
       headStyles: { fillColor: [193, 160, 120] },

@@ -2,10 +2,12 @@
 
 import { useActionState, useState } from 'react';
 import { placeOrder, type OrderState } from './actions';
-import type { Product } from '@/lib/types/database';
+import type { Product, CouponType } from '@/lib/types/database';
 import { useCart } from '@/lib/cart/CartContext';
 import { DELIVERY_ZONES, DELIVERY_FEES, DELIVERY_LABELS, type DeliveryZone } from '@/lib/delivery';
 import { formatPrice } from '@/lib/utils';
+import { computeDiscount } from '@/lib/coupons';
+import { checkCoupon } from '@/lib/actions/coupon';
 
 const initialState: OrderState = { status: 'idle' };
 
@@ -19,6 +21,35 @@ export function OrderForm({ product }: { product: Product }) {
   const [zone, setZone] = useState<DeliveryZone>('dhaka');
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
+
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discountType: CouponType;
+    discountValue: number;
+  } | null>(null);
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
+
+  async function handleApplyCoupon() {
+    if (!couponInput.trim()) return;
+    setCheckingCoupon(true);
+    const result = await checkCoupon(couponInput);
+    setCheckingCoupon(false);
+    if (result.ok) {
+      setAppliedCoupon({ code: result.code, discountType: result.discountType, discountValue: result.discountValue });
+      setCouponMessage(null);
+    } else {
+      setAppliedCoupon(null);
+      setCouponMessage(result.message);
+    }
+  }
+
+  function handleRemoveCoupon() {
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setCouponMessage(null);
+  }
 
   const unitPrice = product.sale_price ?? product.regular_price;
 
@@ -78,6 +109,7 @@ export function OrderForm({ product }: { product: Product }) {
           <input type="hidden" name="productId" value={product.id} />
           <input type="hidden" name="quantity" value={quantity} />
           <input type="hidden" name="deliveryZone" value={zone} />
+          <input type="hidden" name="couponCode" value={appliedCoupon?.code ?? ''} />
 
           <div className="mb-4 flex flex-col gap-2">
             <span className="mb-0.5 text-[13px] text-brand-muted">Delivery location</span>
@@ -114,6 +146,37 @@ export function OrderForm({ product }: { product: Product }) {
             />
           </div>
 
+          <div className="mt-4">
+            {appliedCoupon ? (
+              <div className="flex items-center justify-between rounded-lg border border-brand-accent/40 bg-brand-accent/10 px-3.5 py-2.5 text-sm">
+                <span>
+                  Coupon <span className="font-medium text-brand-accent">{appliedCoupon.code}</span> applied
+                </span>
+                <button type="button" onClick={handleRemoveCoupon} className="cursor-pointer text-xs text-brand-error">
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value)}
+                  placeholder="Coupon code"
+                  className={`flex-1 ${inputClass}`}
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCoupon}
+                  disabled={checkingCoupon || !couponInput.trim()}
+                  className="cursor-pointer rounded-lg border border-white/18 px-4 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {checkingCoupon ? 'Checking…' : 'Apply'}
+                </button>
+              </div>
+            )}
+            {couponMessage && <p className="mt-2 text-sm text-brand-error">{couponMessage}</p>}
+          </div>
+
           {state.status === 'error' && <p className="mt-3.5 text-sm text-brand-error">{state.message}</p>}
 
           <button
@@ -123,7 +186,13 @@ export function OrderForm({ product }: { product: Product }) {
           >
             {isPending
               ? 'Placing order…'
-              : `Place order — ${formatPrice(unitPrice * quantity + DELIVERY_FEES[zone])}`}
+              : `Place order — ${formatPrice(
+                  unitPrice * quantity +
+                    DELIVERY_FEES[zone] -
+                    (appliedCoupon
+                      ? computeDiscount(appliedCoupon.discountType, appliedCoupon.discountValue, unitPrice * quantity)
+                      : 0),
+                )}`}
           </button>
         </form>
       )}

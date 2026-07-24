@@ -85,6 +85,12 @@ export default async function OrderConfirmationPage(props: PageProps<'/order-con
                 <span>Delivery{deliveryLabel ? ` (${deliveryLabel})` : ''}</span>
                 <span>{formatPrice(order.delivery_fee)}</span>
               </div>
+              {order.discount_amount > 0 && (
+                <div className="flex justify-between text-brand-accent">
+                  <span>Discount{order.coupon_code ? ` (${order.coupon_code})` : ''}</span>
+                  <span>-{formatPrice(order.discount_amount)}</span>
+                </div>
+              )}
               <div className="flex justify-between font-medium">
                 <span>Total (Cash on Delivery)</span>
                 <span>{formatPrice(order.total)}</span>

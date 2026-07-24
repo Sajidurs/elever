@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      // Default is 1MB, too small for admin image uploads (cover photo +
+      // multi-file gallery uploads both go through Server Actions). Phone
+      // camera photos commonly run a few MB each.
+      bodySizeLimit: '20mb',
+    },
+  },
 };
 
 export default nextConfig;

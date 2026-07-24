@@ -12,6 +12,14 @@ export const orderSchema = z.object({
   fullName: z.string().trim().min(1, 'Please enter your full name.'),
   phone: z.string().trim().min(7, 'Please enter a valid phone number.'),
   address: z.string().trim().min(1, 'Please enter your delivery address.'),
+  deliveryZone: z.enum(['dhaka', 'outside']),
+});
+
+export const cartOrderSchema = z.object({
+  fullName: z.string().trim().min(1, 'Please enter your full name.'),
+  phone: z.string().trim().min(7, 'Please enter a valid phone number.'),
+  address: z.string().trim().min(1, 'Please enter your delivery address.'),
+  deliveryZone: z.enum(['dhaka', 'outside']),
 });
 
 export const contactSchema = z.object({

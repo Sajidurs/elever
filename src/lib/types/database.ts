@@ -1,3 +1,5 @@
+import type { DeliveryZone } from '@/lib/delivery';
+
 export interface Product {
   id: string;
   slug: string;
@@ -17,34 +19,56 @@ export type OrderStatus = 'pending' | 'fulfilled' | 'cancelled';
 export interface Order {
   id: string;
   product_id: string | null;
-  product_title: string;
-  product_price: number;
-  quantity: number;
+  product_title: string | null;
+  product_price: number | null;
+  quantity: number | null;
   full_name: string;
   phone: string;
   address: string;
+  delivery_zone: DeliveryZone | null;
+  delivery_fee: number;
+  subtotal: number | null;
+  total: number | null;
   status: OrderStatus;
   created_at: string;
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  product_title: string;
+  product_price: number;
+  quantity: number;
+  created_at: string;
+}
+
+export interface OrderLineItem {
+  product_title: string;
+  product_price?: number;
+  quantity: number;
 }
 
 export interface TrackedOrder {
   order_number: string;
-  product_title: string;
-  quantity: number;
   status: OrderStatus;
   created_at: string;
+  total: number;
+  items: OrderLineItem[];
 }
 
 export interface OrderConfirmation {
   id: string;
-  product_title: string;
-  product_price: number;
-  quantity: number;
   full_name: string;
   phone: string;
   address: string;
+  delivery_zone: DeliveryZone | null;
+  delivery_fee: number;
+  subtotal: number | null;
+  total: number;
   status: OrderStatus;
   created_at: string;
+  items: OrderLineItem[];
 }
 
 export interface Activation {

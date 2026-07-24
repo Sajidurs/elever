@@ -2,7 +2,6 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
-import type { OrderStatus } from '@/lib/types/database';
 
 async function getAuthedClient() {
   const supabase = await createClient();
@@ -12,18 +11,18 @@ async function getAuthedClient() {
   return user ? supabase : null;
 }
 
-export async function updateOrderStatus(id: string, status: OrderStatus) {
+export async function deleteActivation(id: string) {
   const supabase = await getAuthedClient();
   if (!supabase) return;
 
-  await supabase.from('orders').update({ status }).eq('id', id);
-  revalidatePath('/admin/orders');
+  await supabase.from('activations').delete().eq('id', id);
+  revalidatePath('/admin/activations');
 }
 
-export async function deleteOrder(id: string) {
+export async function deleteActivationAttempt(id: string) {
   const supabase = await getAuthedClient();
   if (!supabase) return;
 
-  await supabase.from('orders').delete().eq('id', id);
-  revalidatePath('/admin/orders');
+  await supabase.from('activation_attempts').delete().eq('id', id);
+  revalidatePath('/admin/activations');
 }

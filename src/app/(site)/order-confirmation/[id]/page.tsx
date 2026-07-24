@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { getOrderConfirmation } from '@/lib/data/orders';
 import { ecosystem } from '@/lib/content';
 import { formatPrice } from '@/lib/utils';
+import { DELIVERY_LABELS } from '@/lib/delivery';
+import { ClearCartOnSuccess } from '@/components/cart/ClearCartOnSuccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,10 +27,12 @@ export default async function OrderConfirmationPage(props: PageProps<'/order-con
   if (!order) notFound();
 
   const orderNumber = order.id.slice(-8).toUpperCase();
-  const total = order.product_price * order.quantity;
+  const deliveryLabel = order.delivery_zone ? DELIVERY_LABELS[order.delivery_zone] : null;
 
   return (
     <>
+      <ClearCartOnSuccess />
+
       <section className="mx-auto max-w-xl px-5 pt-24 pb-4 text-center sm:px-8 sm:pt-32">
         <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-brand-accent/15 text-2xl text-brand-accent">
           ✓
@@ -59,17 +63,35 @@ export default async function OrderConfirmationPage(props: PageProps<'/order-con
           </div>
 
           <div className="flex flex-col gap-3 text-sm">
-            <div className="flex justify-between gap-4">
-              <span className="text-brand-muted">Item</span>
-              <span className="text-right">
-                {order.quantity} × {order.product_title}
-              </span>
+            {order.items.map((item, i) => (
+              <div key={i} className="flex justify-between gap-4">
+                <span className="text-brand-muted">
+                  {item.quantity} × {item.product_title}
+                </span>
+                {item.product_price != null && (
+                  <span>{formatPrice(item.product_price * item.quantity)}</span>
+                )}
+              </div>
+            ))}
+
+            <div className="mt-1 flex flex-col gap-1.5 border-t border-white/8 pt-3">
+              {order.subtotal != null && (
+                <div className="flex justify-between text-brand-muted">
+                  <span>Subtotal</span>
+                  <span>{formatPrice(order.subtotal)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-brand-muted">
+                <span>Delivery{deliveryLabel ? ` (${deliveryLabel})` : ''}</span>
+                <span>{formatPrice(order.delivery_fee)}</span>
+              </div>
+              <div className="flex justify-between font-medium">
+                <span>Total (Cash on Delivery)</span>
+                <span>{formatPrice(order.total)}</span>
+              </div>
             </div>
-            <div className="flex justify-between gap-4">
-              <span className="text-brand-muted">Total (Cash on Delivery)</span>
-              <span className="font-medium">{formatPrice(total)}</span>
-            </div>
-            <div className="flex justify-between gap-4">
+
+            <div className="flex justify-between gap-4 border-t border-white/8 pt-3">
               <span className="text-brand-muted">Deliver to</span>
               <span className="max-w-[60%] text-right">{order.address}</span>
             </div>

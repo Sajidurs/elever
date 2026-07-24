@@ -2,6 +2,7 @@
 
 import { useActionState } from 'react';
 import { trackOrder, type TrackOrderState } from './actions';
+import { formatPrice } from '@/lib/utils';
 
 const initialState: TrackOrderState = { status: 'idle' };
 
@@ -52,9 +53,14 @@ export function TrackOrderForm() {
               {state.order.status}
             </span>
           </div>
-          <p className="text-sm text-[#c9c9cc]">
-            {state.order.quantity} × {state.order.product_title}
-          </p>
+          <div className="flex flex-col gap-1.5">
+            {state.order.items.map((item, i) => (
+              <p key={i} className="text-sm text-[#c9c9cc]">
+                {item.quantity} × {item.product_title}
+              </p>
+            ))}
+          </div>
+          <p className="mt-3 border-t border-white/8 pt-3 text-sm font-medium">{formatPrice(state.order.total)}</p>
           <p className="mt-1 text-xs text-brand-subtle">
             Placed{' '}
             {new Date(state.order.created_at).toLocaleDateString(undefined, {
